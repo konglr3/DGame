@@ -41,6 +41,7 @@ message A2C_LoginResponse // IResponse
   repeatedList CSServerInfo ServerInfoList = 3; // 服务器信息列表
   repeatedList int RecentServerList = 4; // 最近登录服务器列表ID
   repeatedList CSRecentServerRoleInfo RecentServerRoleInfoList = 5; // 最近登录服务器对应的角色摘要
+  string GateAddress = 6; // 网关地址
 }
 
 /// 服务器信息

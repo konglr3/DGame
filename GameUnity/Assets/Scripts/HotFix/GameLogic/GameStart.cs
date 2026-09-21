@@ -5,7 +5,10 @@ using System.Reflection;
 using Cysharp.Threading.Tasks;
 using GameLogic;
 using DGame;
+using Fantasy;
+using Fantasy.Helper;
 using GameProto;
+using GOS.Login;
 using YooAsset;
 
 #if ENABLE_OBFUZ
@@ -101,8 +104,18 @@ public partial class GameStart
         async UniTaskVoid Init()
         {
             // 初始化 Fantasy 网络模块
-            await GameClient.Instance.InitAsync(m_hotfixAssembly);
-            GameModule.UIModule.ShowWindowAsync<MainLoginUI>();
+            // await GameClient.Instance.InitAsync(m_hotfixAssembly);
+            // GameModule.UIModule.ShowWindowAsync<MainLoginUI>();
+            
+            var apiUrl = $"http://127.0.0.1:20001/api/";
+            await GOS.GOSGame.Initialize(m_hotfixAssembly, null, apiUrl);
+            var client = await GOS.GOSGame.CreateClient();
+            
+            // var response = await client.Login.Register("testUsername", "testPassword");
+            // UnityEngine.Debug.LogWarning(response?.ToJson());
+            
+            var errorCode = await client.Login.Login("testUsername", "testPassword");
+            UnityEngine.Debug.LogWarning(errorCode);
         }
     }
 

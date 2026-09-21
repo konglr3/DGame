@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Scene\Authentication\Controller\" />
     <Folder Include="Scene\Game\FrameSync\Handler\" />
     <Folder Include="Scene\Game\FrameSync\Helper\" />
   </ItemGroup>

@@ -1968,6 +1968,7 @@ namespace Fantasy
             ServerInfoList = null;
             RecentServerList = null;
             RecentServerRoleInfoList = null;
+            GateAddress = default;
             MessageObjectPool<A2C_LoginResponse>.Return(this);
         }
         public uint OpCode() { return OuterOpcode.A2C_LoginResponse; } 
@@ -1983,6 +1984,8 @@ namespace Fantasy
         public List<int> RecentServerList { get; set; }
         [ProtoMember(6)]
         public List<CSRecentServerRoleInfo> RecentServerRoleInfoList { get; set; }
+        [ProtoMember(7)]
+        public string GateAddress { get; set; }
     }
     /// <summary>
     /// 服务器信息
