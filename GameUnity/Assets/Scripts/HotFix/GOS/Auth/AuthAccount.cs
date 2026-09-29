@@ -1,6 +1,6 @@
-﻿namespace GOS.Login
+﻿namespace GOS
 {
-    public class LoginAccount
+    public class AuthAccount
     {
         public string AccountId;
         public string Token;

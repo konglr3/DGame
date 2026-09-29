@@ -14,6 +14,12 @@ public sealed class PlayerData : Entity
     public long SessionRuntimeId { get; set; }
 
     /// <summary>
+    /// 延迟下线定时器 ID（与 EntityTimeoutComponent 分离，避免超时回调误 Dispose 仍在线实体）。
+    /// </summary>
+    [BsonIgnore]
+    public long OfflineTimerId;
+
+    /// <summary>
     /// AccountID
     /// </summary>
     public long AccountID { get; set; }

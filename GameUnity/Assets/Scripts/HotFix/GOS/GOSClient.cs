@@ -4,7 +4,6 @@ using Fantasy;
 using Fantasy.Async;
 using Fantasy.Network.Interface;
 using GOS.Common;
-using GOS.Login;
 using UnityEngine;
 
 namespace GOS
@@ -13,7 +12,7 @@ namespace GOS
     {
         public Scene Scene { get; private set; }
 
-        public LoginComponent Login { get; private set; }
+        public AuthComponent Auth { get; private set; }
 
         public GOSClient()
         {
@@ -24,10 +23,11 @@ namespace GOS
             Scene = await Fantasy.Scene.Create();
             var hostComponent = Scene.AddComponent<HostComponent>();
             hostComponent.ApiUrl = apiUrl;
+            hostComponent.AutoReconnectTimes = 5;
             Scene.AddComponent<EngineComponent>().Module = engineModule;
 
-            Login = Scene.AddComponent<LoginComponent>();
-            Login.ReadSaverHistoryAccounts();
+            Auth = Scene.AddComponent<AuthComponent>();
+            Auth.ReadSaverHistoryAccounts();
         }
     }
 }

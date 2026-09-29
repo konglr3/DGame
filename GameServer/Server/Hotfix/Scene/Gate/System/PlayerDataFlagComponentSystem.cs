@@ -26,7 +26,8 @@ public sealed class PlayerDataFlagComponentDestroySystem : DestroySystem<PlayerD
             return;
         }
 
-        // 执行下线操作 延迟5秒下线
+        // 延迟下线：保留 Gate 缓存与 Roaming 重连窗口（与 Roaming 默认 delayRemove 180s 对齐）
+        // 登录/重连时会 CancelOfflineTimeout，超时未重连再真正下线存档
         playerData.Offline(TbFuncParamConfig.DelayOfflineTime).Coroutine();
     }
 }

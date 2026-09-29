@@ -1,8 +1,11 @@
 ﻿using Fantasy;
 using Fantasy.Async;
+using Fantasy.Entitas;
 using Fantasy.Entitas.Interface;
 using Fantasy.Helper;
 using Fantasy.Network;
+using Fantasy.Network.Roaming;
+using Fantasy.Platform.Net;
 using GameProto;
 // ReSharper disable ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
 
@@ -14,7 +17,9 @@ public sealed class PlayerDataDestroySystem : DestroySystem<PlayerData>
 {
     protected override void Destroy(PlayerData self)
     {
+        self.CancelOfflineTimeout();
         self.SessionRuntimeId = 0;
+        self.OfflineTimerId = 0;
         self.AccountID = 0;
         self.ServerID = 0;
         self.RoleName = string.Empty;
@@ -53,12 +58,65 @@ public static class PlayerDataSystem
     /// <summary>
     /// 账号上线逻辑
     /// </summary>
-    /// <param name="self"></param>
-    public static async FTask Online(this PlayerData self)
+    public static async FTask<uint> Online(this PlayerData self, Session session)
     {
-        await FTask.CompletedTask;
+        var errorCode = await self.OnlineRoaming(session, RoamingType.GameRoamingType);
+        if (errorCode != ErrorCode.SUCCESS)
+        {
+            return errorCode;
+        }
+        return ErrorCode.SUCCESS;
+    }
+
+    private static async FTask<uint> OnlineRoaming(this PlayerData self, Session session, int roamingType)
+    {
+        // 给 Session 创建一个漫游功能。
+        var sessionRoamingComponent = await session.GetOrCreateRoaming(self.Id);
+        var scene = self.Scene;
+
+        if (scene.SceneType != SceneType.Gate)
+        {
+            Log.Error("only SceneType.Gate calls are supported.");
+            return (uint)ErrorCode.LOGIN_UNKNOW_EORROR;
+        }
+
+        var linkResponse = InnerErrorCode.Success;
+        
+        if (!sessionRoamingComponent.IsLinked(roamingType))
+        {
+            var gameSceneCfgLs = SceneConfigData.Instance.GetSceneBySceneType(SceneType.Game);
+            var gameSceneCfg = gameSceneCfgLs[self.Id.GetHashCode() % gameSceneCfgLs.Count];
+
+            using var mapRoamingArgs = Entity.Create<PlayerRoamingArgs>(scene);
+            mapRoamingArgs.RoleId = self.Id;
+            mapRoamingArgs.DisplayName = self.RoleName;
+            mapRoamingArgs.Level = self.Level;
+
+            // 链接漫游到目标 MapScene分线中
+            linkResponse =
+                await sessionRoamingComponent.Link(gameSceneCfg.Address, roamingType, mapRoamingArgs);
+        }
+        else
+        {
+            // 重新或顶号时使用
+            await sessionRoamingComponent.Link(roamingType);
+        }
+        return linkResponse;
     }
     
+    /// <summary>
+    /// 取消延迟下线定时器（断线重连 / 再次登录时调用）。
+    /// </summary>
+    public static void CancelOfflineTimeout(this PlayerData self)
+    {
+        if (self.OfflineTimerId == 0)
+        {
+            return;
+        }
+
+        self.Scene.TimerComponent.Net.Remove(ref self.OfflineTimerId);
+    }
+
     /// <summary>
     /// 账号下线逻辑
     /// </summary>
@@ -75,33 +133,87 @@ public static class PlayerDataSystem
             Log.Warning($"PlayerDataSystem Offline fail accountID: {self.AccountID} serverID: {self.ServerID} not found");
             return;
         }
-
-        if (!scene.TryGetEntity<Session>(self.SessionRuntimeId, out _))
-        {
-            Log.Warning($"PlayerDataSystem Offline fail Session: {self.SessionRuntimeId} not found");
-            return;
-        }
-
+        
         if (timeOut <= 0)
         {
             // 直接执行下线操作
             await self.InternalOffline();
             return;
         }
-        // 延迟下线
-        playerData.SetDestroyTimeout(timeOut, self.InternalOffline);
+
+        // 延迟下线：使用独立定时器，避免 EntityTimeoutComponent 在回调后强制 Dispose 父实体
+        playerData.CancelOfflineTimeout();
+        var runtimeId = playerData.RuntimeId;
+        playerData.OfflineTimerId = scene.TimerComponent.Net.OnceTimer(timeOut, () =>
+        {
+            playerData.OfflineTimerId = 0;
+            if (playerData.IsDisposed || playerData.RuntimeId != runtimeId)
+            {
+                return;
+            }
+
+            playerData.InternalOffline().Coroutine();
+        });
     }
     
     /// <summary>
-    /// 内部下线方法
+    /// 内部下线方法。
+    /// Session 断线后通常已销毁，属于正常情况；仍需存档并清理 Gate 缓存，以结束延迟下线窗口。
     /// </summary>
     /// <param name="self"></param>
     private static async FTask InternalOffline(this PlayerData self)
     {
+        if (self.IsDisposed)
+        {
+            return;
+        }
+
+        // 延迟窗口内已重连并重新绑定 Session：跳过下线
+        if (self.IsStillOnline())
+        {
+            Log.Debug($"PlayerDataSystem Offline skipped, still online RoleId:{self.Id} SessionRuntimeId:{self.SessionRuntimeId}");
+            return;
+        }
+
+        // 结束延迟窗口：立即清理漫游（Session 是否仍在都不影响按 roamingId 清理）
+        if (!self.Scene.TryGetEntity<Session>(self.SessionRuntimeId, out _))
+        {
+            Log.Debug($"PlayerDataSystem Offline Session disposed, RoleId:{self.Id} SessionRuntimeId:{self.SessionRuntimeId}");
+        }
+
+        await self.Scene.RemoveRoaming(self.Id);
+
+        if (self.IsDisposed)
+        {
+            return;
+        }
+
         // 保存当前账号数据到数据库
         await self.Scene.World.Database.Save(self);
         // 在缓存中移除自己 并执行自己的Dispose销毁方法
         self.Scene.GetComponent<PlayerManagerComponent>().Remove(self);
+    }
+
+    /// <summary>
+    /// 判断账号是否已重新绑定到存活 Session。
+    /// </summary>
+    private static bool IsStillOnline(this PlayerData self)
+    {
+        if (self.SessionRuntimeId == 0 ||
+            !self.Scene.TryGetEntity<Session>(self.SessionRuntimeId, out var session) ||
+            session.IsDisposed)
+        {
+            return false;
+        }
+
+        var flag = session.GetComponent<PlayerDataFlagComponent>();
+        if (flag == null)
+        {
+            return false;
+        }
+
+        PlayerData bound = flag.playerData;
+        return bound != null && !bound.IsDisposed && bound.Id == self.Id;
     }
 
     /// <summary>

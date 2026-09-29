@@ -65,20 +65,20 @@ namespace GameLogic
         private FTask<bool> m_connectTask;
 
         /// <summary>
-        /// 心跳间隔 3秒（小于服务器检测间隔5秒）
+        /// 心跳间隔 30秒（与 HostSystem / 服务器 idle 配置对齐）
         /// </summary>
-        private int m_heartBeatInterval = 3000;
+        private int m_heartBeatInterval = 30 * 1000;
 
         /// <summary>
         /// 心跳超时 3秒
-        /// 实际超时 = 3000 + 3000 = 6000ms (6秒) 小于 服务器8秒
+        /// 实际超时 = 30000 + 3000 = 33000ms (33秒) 小于 服务器40秒
         /// </summary>
-        private int m_heartBeatTimeOut = 3000;
+        private int m_heartBeatTimeOut = 3 * 1000;
 
         /// <summary>
         /// 检测与服务器连接超时频率 4秒
         /// </summary>
-        private int m_heartBeatIntervalTimeOut = 4000;
+        private int m_heartBeatIntervalTimeOut = 4 * 1000;
 
         /// <summary>
         /// 网络连接状态

@@ -15,14 +15,14 @@
 
 - 运行导表脚本（`GameConfig\GenerateTool_Binary\*.bat` 或 `GameConfig\GenerateTool_Json\*.bat`）时报错。
 - 检查发现 Luban 工具 DLL 不存在：
-  - 路径（相对仓库根）：`GameConfig\Tools\LubanTools\Luban\Luban.dll`
+  - 路径（相对仓库根）：`GameConfig\[update_config_navigation.py](update_config_navigation.py)Tools\LubanTools\Luban\Luban.dll`
   - 不存在 → 缺少 Luban 工具，需修复。
 - 报错信息包含 `Luban.dll` 找不到、`dotnet` 无法定位程序集等。
 
 > 若 `Luban.dll` 已存在，但导表仍失败，则**不是**本指南范畴（属于配置表 / Excel / 模板问题），不要执行下载构建。
 
 ---
-
+[update_config_navigation.py](update_config_navigation.py)
 ## 1. 关键路径与脚本（已校验，均相对仓库根）
 
 | 名称 | 相对路径 |

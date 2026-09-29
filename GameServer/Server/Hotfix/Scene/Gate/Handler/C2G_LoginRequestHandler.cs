@@ -43,7 +43,7 @@ public sealed class C2G_LoginRequestHandler : MessageRPC<C2G_LoginRequest, G2C_L
         if (playerManagerComponent.TryGet(accountId, request.ServerID, out var playerData))
         {
             // 只要发送了登录协议 就取消账号实体的延迟下线操作
-            playerData.CancelDestroyTimeout();
+            playerData.CancelOfflineTimeout();
             // 如果存在 要进行顶号或者重登、断线重连等流程
             // 在Gate缓存存在该账号
             if (session.RuntimeId == playerData.SessionRuntimeId)
@@ -70,8 +70,12 @@ public sealed class C2G_LoginRequestHandler : MessageRPC<C2G_LoginRequest, G2C_L
             }
             else
             {
+                // Session 已断，PlayerData 仍在延迟下线窗口内：走重连恢复
                 session.AddComponent<PlayerDataFlagComponent>().SetPlayerData(playerData);
             }
+
+            // 尽早绑定新 Session，避免 Online 等待期间延迟下线回调误判为仍离线
+            playerData.RecordSession(session.RuntimeId);
         }
         else
         {
@@ -79,8 +83,14 @@ public sealed class C2G_LoginRequestHandler : MessageRPC<C2G_LoginRequest, G2C_L
             // 首先先到数据库查询是否存在
             // 没有就要创建并保存到数据库
             playerData = await playerManagerComponent.Create(accountId, request.ServerID);
-            // 执行上线操作
-            await playerData.Online();
+        }
+
+        // 首次上线或断线重连：绑定/恢复 Roaming（重连时会复用 delayRemove 窗口内的漫游上下文）
+        var onlineErrorCode = await playerData.Online(session);
+        if (onlineErrorCode != ErrorCode.SUCCESS)
+        {
+            response.ErrorCode = onlineErrorCode;
+            return;
         }
 
         response.ErrorCode = ErrorCode.SUCCESS;

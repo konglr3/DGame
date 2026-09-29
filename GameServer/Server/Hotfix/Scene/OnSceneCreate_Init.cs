@@ -16,9 +16,9 @@ public sealed class OnSceneCreate_Init : AsyncEventSystem<OnCreateScene>
                 // Operations 场景是 AuthWorld 的单例入口 用于驱动账号库迁移
                 await scene.AddComponent<DatabaseComponent>().MigrateAsync();
                 break;
-            case SceneType.Address:
-                // Address 场景是 GameWorld 的单例入口 用于驱动玩家库迁移
-                await scene.AddComponent<DatabaseComponent>().MigrateAsync();
+            // case SceneType.Address:
+            //     // Address 场景是 GameWorld 的单例入口 用于驱动玩家库迁移
+            //     await scene.AddComponent<DatabaseComponent>().MigrateAsync();
                 break;
             case SceneType.Authentication:
                 // 账号管理组件 用于注册和登录

@@ -36,12 +36,12 @@ public class AuthController : ControllerBase
     {
         using A2C_LoginResponse response = A2C_LoginResponse.Create();
         var result = await scene.Login(req.UserName, req.Password);
+        var gateServer = await GateHelper.DistributionGateAddress();
         if (result.ErrorCode == ErrorCode.SUCCESS)
         {
             response.Token = result.Token;
             response.RoleID = result.AccountId;
-            response.GateAddress =
-                $"{TbServerConfig.ServerInfoList[0].Address}:{TbServerConfig.ServerInfoList[0].Port}";
+            response.GateAddress = $"{gateServer.Address}:{gateServer.Port}";
             // response.ServerInfoList = TbServerConfig.ServerInfoList;
             // response.RecentServerList = new List<int>();
             // response.RecentServerList.AddRange(result.RecentServerList); 
