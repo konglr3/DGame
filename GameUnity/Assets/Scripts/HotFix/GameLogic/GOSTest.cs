@@ -6,6 +6,7 @@ using Fantasy.Helper;
 using GOS;
 using GOS.Chat;
 using GOS.Friend;
+using GOS.Group;
 using GOS.Presence;
 
 namespace GameLogic
@@ -30,8 +31,9 @@ namespace GameLogic
             // await TestAutoReconnect(client);
             // await TestGameRoamingRpc(client);
             // await TestChat(client);
-            await TestFriend(client);
-            await TestPresence(client);
+            // await TestFriend(client);
+            // await TestPresence(client);
+            await TestGroup(client);
         }
 
         private static async FTask TestAutoReconnect(GOSClient client)
@@ -150,6 +152,114 @@ namespace GameLogic
 
             await presence.UpdateStatus("GOSTest Viewing Friend Panel");
             UnityEngine.Debug.LogWarning($"TestPresence UpdateStatus MyStatus={presence.MyStatusText}");
+        }
+
+        /// <summary>
+        /// 群组 ECS：创建 / 列表 / 元数据 / 成员列表 / 群聊；Join/审批需第二角色联调。
+        /// </summary>
+        private static async FTask TestGroup(GOSClient client)
+        {
+            var chat = client.Scene.EnsureChat();
+            chat.OnMessageReceived = (tree, text) =>
+            {
+                UnityEngine.Debug.LogWarning(
+                    $"[GroupChat] from={tree?.UserName} channelType={tree?.ChatChannelType} " +
+                    $"channelId={tree?.ChatChannelId} text={text}");
+            };
+
+            var group = client.Scene.EnsureGroup();
+            group.OnGroupChanged = () =>
+            {
+                UnityEngine.Debug.LogWarning(
+                    $"[Group] changed myGroups={group.MyGroups.Count} search={group.SearchGroups.Count} " +
+                    $"members={group.CurrentMembers.Count} currentGroupId={group.CurrentGroupId}");
+            };
+
+            await group.RefreshMyGroups();
+            UnityEngine.Debug.LogWarning($"TestGroup RefreshMyGroups count={group.MyGroups.Count}");
+            foreach (var item in group.MyGroups)
+            {
+                UnityEngine.Debug.LogWarning(
+                    $"[Group][Mine] {item.Group?.Name} Id={item.Group?.GroupId} State={item.State} " +
+                    $"Open={item.Group?.Open} Members={item.Group?.MemberCount}");
+            }
+
+            var groupName = $"GOSTest_{TimeHelper.Now % 100000}";
+            var createOpen = await group.CreateGroup(groupName, "GOSTest open group", open: true, maxCount: 50);
+            UnityEngine.Debug.LogWarning(
+                $"TestGroup CreateOpen ErrorCode={createOpen?.ErrorCode} " +
+                $"GroupId={createOpen?.Group?.GroupId} Name={createOpen?.Group?.Name}");
+
+            ulong groupId = createOpen?.Group?.GroupId ?? 0;
+            if (groupId == 0 && group.MyGroups.Count > 0 && group.MyGroups[0].Group != null)
+            {
+                groupId = group.MyGroups[0].Group.GroupId;
+            }
+
+            if (groupId == 0)
+            {
+                UnityEngine.Debug.LogError("TestGroup abort: no groupId");
+                return;
+            }
+
+            var listSearch = await group.ListGroups("GOSTest", limit: 20);
+            UnityEngine.Debug.LogWarning(
+                $"TestGroup ListGroups ErrorCode={listSearch?.ErrorCode} Count={group.SearchGroups.Count} Cursor={listSearch?.Cursor}");
+            foreach (var item in group.SearchGroups)
+            {
+                UnityEngine.Debug.LogWarning($"[Group][Search] {item.Name} Id={item.GroupId} Open={item.Open}");
+            }
+
+            var meta = new Dictionary<string, string>
+            {
+                ["Interests"] = "Deception,Sabotage",
+                ["ActiveTimes"] = "9am-10pm",
+                ["Lang"] = "zh-CN"
+            };
+            var updateMeta = await group.UpdateGroupMetadata(groupId, meta);
+            UnityEngine.Debug.LogWarning(
+                $"TestGroup UpdateMetadata ErrorCode={updateMeta?.ErrorCode} MetaCount={updateMeta?.Group?.Metadata?.Count}");
+            if (updateMeta?.Group?.Metadata != null)
+            {
+                foreach (var kv in updateMeta.Group.Metadata)
+                {
+                    UnityEngine.Debug.LogWarning($"[Group][Meta] {kv.Key}={kv.Value}");
+                }
+            }
+
+            var updateGroup = await group.UpdateGroup(groupId, description: "updated by GOSTest", open: true);
+            UnityEngine.Debug.LogWarning(
+                $"TestGroup UpdateGroup ErrorCode={updateGroup?.ErrorCode} Desc={updateGroup?.Group?.Description}");
+
+            var listUsers = await group.ListGroupUsers(groupId, state: -1);
+            UnityEngine.Debug.LogWarning(
+                $"TestGroup ListUsers ErrorCode={listUsers?.ErrorCode} Count={group.CurrentMembers.Count}");
+            foreach (var user in group.CurrentMembers)
+            {
+                UnityEngine.Debug.LogWarning(
+                    $"[Group][Member] {user.RoleName} Id={user.RoleId} State={user.State} Lv={user.Level}");
+            }
+
+            var chatResponse = await group.SendGroupChat(groupId, "hello group chat from GOSTest");
+            UnityEngine.Debug.LogWarning($"TestGroup SendGroupChat ErrorCode={chatResponse?.ErrorCode}");
+
+            // 私密群：创建后第二客户端 Join 会变申请(State=3)，本端再 AddGroupUsers 批准
+            var privateName = $"GOSTest_Private_{TimeHelper.Now % 100000}";
+            var createPrivate = await group.CreateGroup(privateName, "GOSTest private group", open: false, maxCount: 20);
+            UnityEngine.Debug.LogWarning(
+                $"TestGroup CreatePrivate ErrorCode={createPrivate?.ErrorCode} GroupId={createPrivate?.Group?.GroupId}");
+
+            // 单端烟雾：Join 不存在的群应返回 GROUP_NOT_FOUND
+            var joinMissing = await group.JoinGroup(999999999UL);
+            UnityEngine.Debug.LogWarning($"TestGroup JoinMissing ErrorCode={joinMissing?.ErrorCode}");
+
+            // 联调提示：第二角色执行 JoinGroup(groupId) 后，本端可：
+            // await group.ListGroupUsers(groupId, GroupMemberState.JoinRequest);
+            // await group.AddGroupUsers(groupId, targetRoleId);
+            // await group.PromoteGroupUsers(groupId, targetRoleId);
+            // await group.KickGroupUsers(groupId, targetRoleId);
+            await group.RefreshMyGroups();
+            UnityEngine.Debug.LogWarning($"TestGroup Done myGroups={group.MyGroups.Count}");
         }
     }
 }
