@@ -105,10 +105,7 @@ public sealed class C2G_LoginRequestHandler : MessageRPC<C2G_LoginRequest, G2C_L
         // 记录客户端的Session
         playerData.RecordSession(session.RuntimeId);
 
-        if (session.GetComponent<PlayerDataFlagComponent>() == null)
-        {
-            // 给当前客户端的Session添加一个组件 当Session异常断开的时候 进行玩家账号数据下线逻辑
-            session.AddComponent<PlayerDataFlagComponent>().SetPlayerData(playerData);
-        }
+        // 给当前客户端的Session添加一个组件 当Session异常断开的时候 进行玩家账号数据下线逻辑
+        session.GetOrAddComponent<PlayerDataFlagComponent>().SetPlayerData(playerData);
     }
 }

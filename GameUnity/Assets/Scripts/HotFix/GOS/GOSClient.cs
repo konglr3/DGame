@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Fantasy;
 using Fantasy.Async;
 using Fantasy.Network.Interface;
+using GOS.Chat;
 using GOS.Common;
 using UnityEngine;
 
@@ -28,6 +29,7 @@ namespace GOS
 
             Auth = Scene.AddComponent<AuthComponent>();
             Auth.ReadSaverHistoryAccounts();
+            Scene.EnsureChat();
         }
     }
 }

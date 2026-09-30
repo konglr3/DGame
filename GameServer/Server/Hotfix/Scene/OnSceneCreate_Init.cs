@@ -37,6 +37,14 @@ public sealed class OnSceneCreate_Init : AsyncEventSystem<OnCreateScene>
                 // Game 场景挂房间管理组件。
                 scene.AddComponent<RoomManagerComponent>();
                 break;
+            case SceneType.Chat:
+                // 序列化组件（聊天节点附加 Data）
+                scene.AddComponent<SerializerComponent>().Initialize();
+                // ChatUnit 管理组件
+                scene.AddComponent<ChatUnitManageComponent>();
+                // 聊天频道中控
+                scene.AddComponent<ChatChannelCenterComponent>();
+                break;
         }
 
         await FTask.CompletedTask;

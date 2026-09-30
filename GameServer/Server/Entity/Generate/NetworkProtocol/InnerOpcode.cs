@@ -16,5 +16,7 @@ namespace Fantasy
         public const uint G2Game_BattleLoadDoneRequest = 1073751829;
         public const uint G2Game_StartBattleResponse = 1207969556;
         public const uint G2Gate_RoomPlayerInfoChangedMessage = 939534097;
+        public const uint Chat2G_ChatMessage = 939534098;
+        public const uint Other2Chat_ChatMessage = 939534099;
     }
 }

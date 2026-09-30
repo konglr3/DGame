@@ -65,6 +65,13 @@ public static class PlayerDataSystem
         {
             return errorCode;
         }
+
+        errorCode = await self.OnlineRoaming(session, RoamingType.ChatRoamingType);
+        if (errorCode != ErrorCode.SUCCESS)
+        {
+            return errorCode;
+        }
+
         return ErrorCode.SUCCESS;
     }
 
@@ -84,17 +91,30 @@ public static class PlayerDataSystem
         
         if (!sessionRoamingComponent.IsLinked(roamingType))
         {
-            var gameSceneCfgLs = SceneConfigData.Instance.GetSceneBySceneType(SceneType.Game);
-            var gameSceneCfg = gameSceneCfgLs[self.Id.GetHashCode() % gameSceneCfgLs.Count];
+            var targetSceneType = GetSceneTypeByRoamingType(roamingType);
+            if (targetSceneType == 0)
+            {
+                Log.Error($"OnlineRoaming unsupported roamingType:{roamingType}");
+                return (uint)ErrorCode.LOGIN_UNKNOW_EORROR;
+            }
 
-            using var mapRoamingArgs = Entity.Create<PlayerRoamingArgs>(scene);
-            mapRoamingArgs.RoleId = self.Id;
-            mapRoamingArgs.DisplayName = self.RoleName;
-            mapRoamingArgs.Level = self.Level;
+            var sceneCfgLs = SceneConfigData.Instance.GetSceneBySceneType(targetSceneType);
+            if (sceneCfgLs == null || sceneCfgLs.Count == 0)
+            {
+                Log.Error($"OnlineRoaming no scene for SceneType:{targetSceneType}");
+                return (uint)ErrorCode.LOGIN_UNKNOW_EORROR;
+            }
 
-            // 链接漫游到目标 MapScene分线中
+            var sceneCfg = sceneCfgLs[Math.Abs(self.Id.GetHashCode()) % sceneCfgLs.Count];
+
+            using var roamingArgs = Entity.Create<PlayerRoamingArgs>(scene);
+            roamingArgs.RoleId = self.Id;
+            roamingArgs.DisplayName = self.RoleName;
+            roamingArgs.Level = self.Level;
+
+            // 链接漫游到目标 Scene
             linkResponse =
-                await sessionRoamingComponent.Link(gameSceneCfg.Address, roamingType, mapRoamingArgs);
+                await sessionRoamingComponent.Link(sceneCfg.Address, roamingType, roamingArgs);
         }
         else
         {
@@ -102,6 +122,21 @@ public static class PlayerDataSystem
             await sessionRoamingComponent.Link(roamingType);
         }
         return linkResponse;
+    }
+
+    private static int GetSceneTypeByRoamingType(int roamingType)
+    {
+        if (roamingType == RoamingType.GameRoamingType)
+        {
+            return SceneType.Game;
+        }
+
+        if (roamingType == RoamingType.ChatRoamingType)
+        {
+            return SceneType.Chat;
+        }
+
+        return 0;
     }
     
     /// <summary>

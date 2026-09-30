@@ -173,6 +173,30 @@ namespace Fantasy
 			session.Send(S2C_BroadcastFrameData_message);
 		}
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Chat2C_SendMessageResponse> C2Chat_SendMessageRequest(this Session session, C2Chat_SendMessageRequest C2Chat_SendMessageRequest_request)
+		{
+			return (Chat2C_SendMessageResponse)await session.Call(C2Chat_SendMessageRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Chat2C_SendMessageResponse> C2Chat_SendMessageRequest(this Session session, ChatInfoTree chatInfoTree)
+		{
+			using var C2Chat_SendMessageRequest_request = Fantasy.C2Chat_SendMessageRequest.Create();
+			C2Chat_SendMessageRequest_request.ChatInfoTree = chatInfoTree;
+			return (Chat2C_SendMessageResponse)await session.Call(C2Chat_SendMessageRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void Chat2C_Message(this Session session, Chat2C_Message Chat2C_Message_message)
+		{
+			session.Send(Chat2C_Message_message);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void Chat2C_Message(this Session session, ChatInfoTree chatInfoTree)
+		{
+			using var Chat2C_Message_message = Fantasy.Chat2C_Message.Create();
+			Chat2C_Message_message.ChatInfoTree = chatInfoTree;
+			session.Send(Chat2C_Message_message);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static async FTask<G2C_QueryFuncOpenListResponse> C2G_QueryFuncOpenListRequest(this Session session, C2G_QueryFuncOpenListRequest C2G_QueryFuncOpenListRequest_request)
 		{
 			return (G2C_QueryFuncOpenListResponse)await session.Call(C2G_QueryFuncOpenListRequest_request);
@@ -258,6 +282,17 @@ namespace Fantasy
 		{
 			using var message = Fantasy.G2C_RepeatLogin.Create();
 			session.Send(message);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_GetPlayerDataResponse> C2Game_GetPlayerDataRequest(this Session session, C2Game_GetPlayerDataRequest C2Game_GetPlayerDataRequest_request)
+		{
+			return (Game2C_GetPlayerDataResponse)await session.Call(C2Game_GetPlayerDataRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_GetPlayerDataResponse> C2Game_GetPlayerDataRequest(this Session session)
+		{
+			using var C2Game_GetPlayerDataRequest_request = Fantasy.C2Game_GetPlayerDataRequest.Create();
+			return (Game2C_GetPlayerDataResponse)await session.Call(C2Game_GetPlayerDataRequest_request);
 		}
 
    }

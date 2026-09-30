@@ -646,4 +646,95 @@ namespace Fantasy
         [ProtoMember(4)]
         public uint FightValue { get; set; }
     }
+    /// <summary>
+    /// Chat 通知 Gate 广播/推送聊天信息（SessionRuntimeId=0 表示本 Gate 全员）
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class Chat2G_ChatMessage : AMessage, IAddressMessage
+    {
+        public static Chat2G_ChatMessage Create(bool autoReturn = true)
+        {
+            var chat2G_ChatMessage = MessageObjectPool<Chat2G_ChatMessage>.Rent();
+            chat2G_ChatMessage.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                chat2G_ChatMessage.SetIsPool(false);
+            }
+            
+            return chat2G_ChatMessage;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            ChatInfoTree = default;
+            SessionRuntimeId = default;
+            MessageObjectPool<Chat2G_ChatMessage>.Return(this);
+        }
+        public uint OpCode() { return InnerOpcode.Chat2G_ChatMessage; } 
+        [ProtoMember(1)]
+        public ChatInfoTree ChatInfoTree { get; set; }
+        [ProtoMember(2)]
+        public long SessionRuntimeId { get; set; }
+    }
+    /// <summary>
+    /// 其他服务器发送聊天消息到 ChatUnit
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class Other2Chat_ChatMessage : AMessage, IAddressMessage
+    {
+        public static Other2Chat_ChatMessage Create(bool autoReturn = true)
+        {
+            var other2Chat_ChatMessage = MessageObjectPool<Other2Chat_ChatMessage>.Rent();
+            other2Chat_ChatMessage.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                other2Chat_ChatMessage.SetIsPool(false);
+            }
+            
+            return other2Chat_ChatMessage;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            ChatInfoTree = default;
+            MessageObjectPool<Other2Chat_ChatMessage>.Return(this);
+        }
+        public uint OpCode() { return InnerOpcode.Other2Chat_ChatMessage; } 
+        [ProtoMember(1)]
+        public ChatInfoTree ChatInfoTree { get; set; }
+    }
 }

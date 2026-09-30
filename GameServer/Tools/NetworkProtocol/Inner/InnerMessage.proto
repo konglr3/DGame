@@ -105,3 +105,16 @@ message InnerRoomPlayerInfo
     uint Level = 3;
     uint FightValue = 4;
 }
+
+/// Chat 通知 Gate 广播/推送聊天信息（SessionRuntimeId=0 表示本 Gate 全员）
+message Chat2G_ChatMessage // IAddressMessage
+{
+    ChatInfoTree ChatInfoTree = 1;
+    int64 SessionRuntimeId = 2;
+}
+
+/// 其他服务器发送聊天消息到 ChatUnit
+message Other2Chat_ChatMessage // IAddressMessage
+{
+    ChatInfoTree ChatInfoTree = 1;
+}

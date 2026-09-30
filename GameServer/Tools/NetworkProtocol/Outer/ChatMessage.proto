@@ -1,0 +1,81 @@
+syntax = "proto3";
+package Fantasy.Network.Message;
+
+// 协议分为:
+// ProtoBuf:可以在Outer和Inner文件里使用。
+// MemoryPack:可以在Outer和Inner文件里使用。
+
+// 目前工具支持以下几种特殊用法:
+// 在message协议上方添加// Protocol+空格+协议名字
+// 例如: // Protocol ProtoBuf 或 // Protocol MemoryPack
+
+// 分别代表使用Protobuf序列化或使用MemoryPack序列化
+// 通过添加 // using 导出时增加自定义命名空间
+// 例如: // using System.Runtime // using System.Reflection
+
+/// 发送聊天消息（经 Gate Roaming 转发到 Chat）
+message C2Chat_SendMessageRequest // IRoamingRequest,Chat2C_SendMessageResponse,ChatRoamingType
+{
+	ChatInfoTree ChatInfoTree = 1;
+}
+/// 发送聊天消息返回
+message Chat2C_SendMessageResponse // IRoamingResponse
+{
+}
+
+/// Chat 推送给客户端的聊天消息
+message Chat2C_Message // IMessage
+{
+	ChatInfoTree ChatInfoTree = 1;
+}
+
+/// 聊天消息树
+message ChatInfoTree
+{
+	int32 ChatChannelType = 1;			// 频道的类型
+	int64 ChatChannelId = 2;			// 频道的ID
+	int64 UnitId = 3;					// 发送人的UnitId
+	string UserName = 4;				// 发送人的名字
+	repeated int64 Target = 5;			// 接收聊天信息的目标数组
+	repeated ChatInfoNode Node = 6;		// 聊天节点
+}
+
+/// 聊天信息节点
+message ChatInfoNode
+{
+	int32 ChatNodeType = 1;		// 节点类型（例如：超链接、普通的内容、表情...）
+	int32 ChatNodeEvent = 2;	// 节点分发事件的类型
+	string Content = 3;			// 信息内容
+	string Color = 4;			// 表示这个内容的颜色
+	repeatedArray byte Data = 5;	// 表示附加的一些数据
+}
+
+/// 聊天位置信息节点
+message ChatPositionNode
+{
+	string MapName = 1;
+	float PosX = 2;
+	float PosY = 3;
+	float PosZ = 4;
+}
+
+/// 聊天打开 UI 节点
+message ChatOpenUINode
+{
+	string UIName = 1;
+}
+
+/// 聊天链接信息节点
+message ChatLinkNode
+{
+	string Link = 1;
+}
+
+/// 装备/道具信息实体（演示用）
+message ChatItem
+{
+	string Level = 1;
+	string Name = 2;
+	string HP = 3;
+	string MP = 4;
+}

@@ -36,3 +36,14 @@ message CSPlayerData
   long LastAddStamTime = 18; /// 上次增加体力时间
   int DailyBuyStamCount = 19; /// 每日购买体力次数
 }
+
+/// 通过 Game Roaming 获取当前玩家角色数据
+message C2Game_GetPlayerDataRequest // IRoamingRequest,Game2C_GetPlayerDataResponse,GameRoamingType
+{
+}
+
+/// 获取玩家角色数据返回
+message Game2C_GetPlayerDataResponse // IRoamingResponse
+{
+  CSPlayerData PlayerData = 1;
+}

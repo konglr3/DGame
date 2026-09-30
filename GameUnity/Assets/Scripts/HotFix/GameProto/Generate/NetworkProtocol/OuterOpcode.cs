@@ -23,16 +23,21 @@ namespace Fantasy
         public const uint S2C_NotifyEnterBattle = 134227733;
         public const uint CSChapterInfo = 134227734;
         public const uint S2C_BroadcastFrameData = 134227735;
+        public const uint C2Chat_SendMessageRequest = 2684364561;
+        public const uint Chat2C_SendMessageResponse = 2818582289;
+        public const uint Chat2C_Message = 134227736;
         public const uint C2G_QueryFuncOpenListRequest = 268445462;
         public const uint G2C_QueryFuncOpenListResponse = 402663190;
-        public const uint G2C_FuncOpenNotify = 134227736;
+        public const uint G2C_FuncOpenNotify = 134227737;
         public const uint C2A_RegisterRequest = 268445463;
         public const uint A2C_RegisterResponse = 402663191;
         public const uint C2A_LoginRequest = 268445464;
         public const uint A2C_LoginResponse = 402663192;
-        public const uint C2A_RecordRecentServer = 134227737;
+        public const uint C2A_RecordRecentServer = 134227738;
         public const uint C2G_LoginRequest = 268445465;
         public const uint G2C_LoginResponse = 402663193;
-        public const uint G2C_RepeatLogin = 134227738;
+        public const uint G2C_RepeatLogin = 134227739;
+        public const uint C2Game_GetPlayerDataRequest = 2684364562;
+        public const uint Game2C_GetPlayerDataResponse = 2818582290;
     }
 }

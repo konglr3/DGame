@@ -1641,6 +1641,453 @@ namespace Fantasy
         public string GmString { get; set; }
     }
     /// <summary>
+    /// 发送聊天消息（经 Gate Roaming 转发到 Chat）
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class C2Chat_SendMessageRequest : AMessage, IRoamingRequest
+    {
+        public static C2Chat_SendMessageRequest Create(bool autoReturn = true)
+        {
+            var c2Chat_SendMessageRequest = MessageObjectPool<C2Chat_SendMessageRequest>.Rent();
+            c2Chat_SendMessageRequest.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                c2Chat_SendMessageRequest.SetIsPool(false);
+            }
+            
+            return c2Chat_SendMessageRequest;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            if (ChatInfoTree != null)
+            {
+                ChatInfoTree.Dispose();
+                ChatInfoTree = null;
+            }
+            MessageObjectPool<C2Chat_SendMessageRequest>.Return(this);
+        }
+        public uint OpCode() { return OuterOpcode.C2Chat_SendMessageRequest; } 
+        [ProtoIgnore]
+        public Chat2C_SendMessageResponse ResponseType { get; set; }
+        [ProtoIgnore]
+        public int RouteType => Fantasy.RoamingType.ChatRoamingType;
+        [ProtoMember(1)]
+        public ChatInfoTree ChatInfoTree { get; set; }
+    }
+    /// <summary>
+    /// 发送聊天消息返回
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class Chat2C_SendMessageResponse : AMessage, IRoamingResponse
+    {
+        public static Chat2C_SendMessageResponse Create(bool autoReturn = true)
+        {
+            var chat2C_SendMessageResponse = MessageObjectPool<Chat2C_SendMessageResponse>.Rent();
+            chat2C_SendMessageResponse.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                chat2C_SendMessageResponse.SetIsPool(false);
+            }
+            
+            return chat2C_SendMessageResponse;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            ErrorCode = 0;
+            MessageObjectPool<Chat2C_SendMessageResponse>.Return(this);
+        }
+        public uint OpCode() { return OuterOpcode.Chat2C_SendMessageResponse; } 
+        [ProtoMember(1)]
+        public uint ErrorCode { get; set; }
+    }
+    /// <summary>
+    /// Chat 推送给客户端的聊天消息
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class Chat2C_Message : AMessage, IMessage
+    {
+        public static Chat2C_Message Create(bool autoReturn = true)
+        {
+            var chat2C_Message = MessageObjectPool<Chat2C_Message>.Rent();
+            chat2C_Message.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                chat2C_Message.SetIsPool(false);
+            }
+            
+            return chat2C_Message;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            if (ChatInfoTree != null)
+            {
+                ChatInfoTree.Dispose();
+                ChatInfoTree = null;
+            }
+            MessageObjectPool<Chat2C_Message>.Return(this);
+        }
+        public uint OpCode() { return OuterOpcode.Chat2C_Message; } 
+        [ProtoMember(1)]
+        public ChatInfoTree ChatInfoTree { get; set; }
+    }
+    /// <summary>
+    /// 聊天消息树
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class ChatInfoTree : AMessage, IDisposable
+    {
+        public static ChatInfoTree Create(bool autoReturn = true)
+        {
+            var chatInfoTree = MessageObjectPool<ChatInfoTree>.Rent();
+            chatInfoTree.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                chatInfoTree.SetIsPool(false);
+            }
+            
+            return chatInfoTree;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            ChatChannelType = default;
+            ChatChannelId = default;
+            UnitId = default;
+            UserName = default;
+            Target.Clear();
+            Node.Clear();
+            MessageObjectPool<ChatInfoTree>.Return(this);
+        }
+        [ProtoMember(1)]
+        public int ChatChannelType { get; set; }
+        [ProtoMember(2)]
+        public long ChatChannelId { get; set; }
+        [ProtoMember(3)]
+        public long UnitId { get; set; }
+        [ProtoMember(4)]
+        public string UserName { get; set; }
+        [ProtoMember(5)]
+        public List<long> Target { get; set; } = new List<long>();
+        [ProtoMember(6)]
+        public List<ChatInfoNode> Node { get; set; } = new List<ChatInfoNode>();
+    }
+    /// <summary>
+    /// 聊天信息节点
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class ChatInfoNode : AMessage, IDisposable
+    {
+        public static ChatInfoNode Create(bool autoReturn = true)
+        {
+            var chatInfoNode = MessageObjectPool<ChatInfoNode>.Rent();
+            chatInfoNode.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                chatInfoNode.SetIsPool(false);
+            }
+            
+            return chatInfoNode;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            ChatNodeType = default;
+            ChatNodeEvent = default;
+            Content = default;
+            Color = default;
+            Data = null;
+            MessageObjectPool<ChatInfoNode>.Return(this);
+        }
+        [ProtoMember(1)]
+        public int ChatNodeType { get; set; }
+        [ProtoMember(2)]
+        public int ChatNodeEvent { get; set; }
+        [ProtoMember(3)]
+        public string Content { get; set; }
+        [ProtoMember(4)]
+        public string Color { get; set; }
+        [ProtoMember(5)]
+        public byte[] Data { get; set; }
+    }
+    /// <summary>
+    /// 聊天位置信息节点
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class ChatPositionNode : AMessage, IDisposable
+    {
+        public static ChatPositionNode Create(bool autoReturn = true)
+        {
+            var chatPositionNode = MessageObjectPool<ChatPositionNode>.Rent();
+            chatPositionNode.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                chatPositionNode.SetIsPool(false);
+            }
+            
+            return chatPositionNode;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            MapName = default;
+            PosX = default;
+            PosY = default;
+            PosZ = default;
+            MessageObjectPool<ChatPositionNode>.Return(this);
+        }
+        [ProtoMember(1)]
+        public string MapName { get; set; }
+        [ProtoMember(2)]
+        public float PosX { get; set; }
+        [ProtoMember(3)]
+        public float PosY { get; set; }
+        [ProtoMember(4)]
+        public float PosZ { get; set; }
+    }
+    /// <summary>
+    /// 聊天打开 UI 节点
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class ChatOpenUINode : AMessage, IDisposable
+    {
+        public static ChatOpenUINode Create(bool autoReturn = true)
+        {
+            var chatOpenUINode = MessageObjectPool<ChatOpenUINode>.Rent();
+            chatOpenUINode.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                chatOpenUINode.SetIsPool(false);
+            }
+            
+            return chatOpenUINode;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            UIName = default;
+            MessageObjectPool<ChatOpenUINode>.Return(this);
+        }
+        [ProtoMember(1)]
+        public string UIName { get; set; }
+    }
+    /// <summary>
+    /// 聊天链接信息节点
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class ChatLinkNode : AMessage, IDisposable
+    {
+        public static ChatLinkNode Create(bool autoReturn = true)
+        {
+            var chatLinkNode = MessageObjectPool<ChatLinkNode>.Rent();
+            chatLinkNode.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                chatLinkNode.SetIsPool(false);
+            }
+            
+            return chatLinkNode;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            Link = default;
+            MessageObjectPool<ChatLinkNode>.Return(this);
+        }
+        [ProtoMember(1)]
+        public string Link { get; set; }
+    }
+    /// <summary>
+    /// 装备/道具信息实体（演示用）
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class ChatItem : AMessage, IDisposable
+    {
+        public static ChatItem Create(bool autoReturn = true)
+        {
+            var chatItem = MessageObjectPool<ChatItem>.Rent();
+            chatItem.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                chatItem.SetIsPool(false);
+            }
+            
+            return chatItem;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            Level = default;
+            Name = default;
+            HP = default;
+            MP = default;
+            MessageObjectPool<ChatItem>.Return(this);
+        }
+        [ProtoMember(1)]
+        public string Level { get; set; }
+        [ProtoMember(2)]
+        public string Name { get; set; }
+        [ProtoMember(3)]
+        public string HP { get; set; }
+        [ProtoMember(4)]
+        public string MP { get; set; }
+    }
+    /// <summary>
     /// 查询功能开放列表
     /// </summary>
     [Serializable]
@@ -2465,5 +2912,101 @@ namespace Fantasy
         /// </summary>
         [ProtoMember(19)]
         public int DailyBuyStamCount { get; set; }
+    }
+    /// <summary>
+    /// 通过 Game Roaming 获取当前玩家角色数据
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class C2Game_GetPlayerDataRequest : AMessage, IRoamingRequest
+    {
+        public static C2Game_GetPlayerDataRequest Create(bool autoReturn = true)
+        {
+            var c2Game_GetPlayerDataRequest = MessageObjectPool<C2Game_GetPlayerDataRequest>.Rent();
+            c2Game_GetPlayerDataRequest.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                c2Game_GetPlayerDataRequest.SetIsPool(false);
+            }
+            
+            return c2Game_GetPlayerDataRequest;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            MessageObjectPool<C2Game_GetPlayerDataRequest>.Return(this);
+        }
+        public uint OpCode() { return OuterOpcode.C2Game_GetPlayerDataRequest; } 
+        [ProtoIgnore]
+        public Game2C_GetPlayerDataResponse ResponseType { get; set; }
+        [ProtoIgnore]
+        public int RouteType => Fantasy.RoamingType.GameRoamingType;
+    }
+    /// <summary>
+    /// 获取玩家角色数据返回
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class Game2C_GetPlayerDataResponse : AMessage, IRoamingResponse
+    {
+        public static Game2C_GetPlayerDataResponse Create(bool autoReturn = true)
+        {
+            var game2C_GetPlayerDataResponse = MessageObjectPool<Game2C_GetPlayerDataResponse>.Rent();
+            game2C_GetPlayerDataResponse.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                game2C_GetPlayerDataResponse.SetIsPool(false);
+            }
+            
+            return game2C_GetPlayerDataResponse;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            ErrorCode = 0;
+            if (PlayerData != null)
+            {
+                PlayerData.Dispose();
+                PlayerData = null;
+            }
+            MessageObjectPool<Game2C_GetPlayerDataResponse>.Return(this);
+        }
+        public uint OpCode() { return OuterOpcode.Game2C_GetPlayerDataResponse; } 
+        [ProtoMember(1)]
+        public uint ErrorCode { get; set; }
+        [ProtoMember(2)]
+        public CSPlayerData PlayerData { get; set; }
     }
 }
