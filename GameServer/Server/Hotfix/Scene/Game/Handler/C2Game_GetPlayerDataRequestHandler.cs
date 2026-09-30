@@ -24,7 +24,7 @@ public sealed class C2Game_GetPlayerDataRequestHandler
         }
 
         response.ErrorCode = ErrorCode.SUCCESS;
-        response.PlayerData = playerData.ToCSPlayerData();
+        response.PlayerData = PlayerDataHelper.ToCSPlayerData(playerData);
         await FTask.CompletedTask;
     }
 }
