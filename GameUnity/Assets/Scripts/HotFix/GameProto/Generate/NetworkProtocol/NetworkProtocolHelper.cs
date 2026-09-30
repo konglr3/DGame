@@ -298,6 +298,211 @@ namespace Fantasy
 			session.Send(G2C_FuncOpenNotify_message);
 		}
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_CreateGroupResponse> C2Game_CreateGroupRequest(this Session session, C2Game_CreateGroupRequest C2Game_CreateGroupRequest_request)
+		{
+			return (Game2C_CreateGroupResponse)await session.Call(C2Game_CreateGroupRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_CreateGroupResponse> C2Game_CreateGroupRequest(this Session session, string name, string description, string avatarUrl, string langTag, bool open, int maxCount)
+		{
+			using var C2Game_CreateGroupRequest_request = Fantasy.C2Game_CreateGroupRequest.Create();
+			C2Game_CreateGroupRequest_request.Name = name;
+			C2Game_CreateGroupRequest_request.Description = description;
+			C2Game_CreateGroupRequest_request.AvatarUrl = avatarUrl;
+			C2Game_CreateGroupRequest_request.LangTag = langTag;
+			C2Game_CreateGroupRequest_request.Open = open;
+			C2Game_CreateGroupRequest_request.MaxCount = maxCount;
+			return (Game2C_CreateGroupResponse)await session.Call(C2Game_CreateGroupRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_UpdateGroupResponse> C2Game_UpdateGroupRequest(this Session session, C2Game_UpdateGroupRequest C2Game_UpdateGroupRequest_request)
+		{
+			return (Game2C_UpdateGroupResponse)await session.Call(C2Game_UpdateGroupRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_UpdateGroupResponse> C2Game_UpdateGroupRequest(this Session session, ulong groupId, string name, string description, string avatarUrl, string langTag, bool hasOpen, bool open, int maxCount)
+		{
+			using var C2Game_UpdateGroupRequest_request = Fantasy.C2Game_UpdateGroupRequest.Create();
+			C2Game_UpdateGroupRequest_request.GroupId = groupId;
+			C2Game_UpdateGroupRequest_request.Name = name;
+			C2Game_UpdateGroupRequest_request.Description = description;
+			C2Game_UpdateGroupRequest_request.AvatarUrl = avatarUrl;
+			C2Game_UpdateGroupRequest_request.LangTag = langTag;
+			C2Game_UpdateGroupRequest_request.HasOpen = hasOpen;
+			C2Game_UpdateGroupRequest_request.Open = open;
+			C2Game_UpdateGroupRequest_request.MaxCount = maxCount;
+			return (Game2C_UpdateGroupResponse)await session.Call(C2Game_UpdateGroupRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_UpdateGroupMetadataResponse> C2Game_UpdateGroupMetadataRequest(this Session session, C2Game_UpdateGroupMetadataRequest C2Game_UpdateGroupMetadataRequest_request)
+		{
+			return (Game2C_UpdateGroupMetadataResponse)await session.Call(C2Game_UpdateGroupMetadataRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_UpdateGroupMetadataResponse> C2Game_UpdateGroupMetadataRequest(this Session session, ulong groupId, Dictionary<string, string> metadata)
+		{
+			using var C2Game_UpdateGroupMetadataRequest_request = Fantasy.C2Game_UpdateGroupMetadataRequest.Create();
+			C2Game_UpdateGroupMetadataRequest_request.GroupId = groupId;
+			C2Game_UpdateGroupMetadataRequest_request.Metadata = metadata;
+			return (Game2C_UpdateGroupMetadataResponse)await session.Call(C2Game_UpdateGroupMetadataRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_DeleteGroupResponse> C2Game_DeleteGroupRequest(this Session session, C2Game_DeleteGroupRequest C2Game_DeleteGroupRequest_request)
+		{
+			return (Game2C_DeleteGroupResponse)await session.Call(C2Game_DeleteGroupRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_DeleteGroupResponse> C2Game_DeleteGroupRequest(this Session session, ulong groupId)
+		{
+			using var C2Game_DeleteGroupRequest_request = Fantasy.C2Game_DeleteGroupRequest.Create();
+			C2Game_DeleteGroupRequest_request.GroupId = groupId;
+			return (Game2C_DeleteGroupResponse)await session.Call(C2Game_DeleteGroupRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_ListGroupsResponse> C2Game_ListGroupsRequest(this Session session, C2Game_ListGroupsRequest C2Game_ListGroupsRequest_request)
+		{
+			return (Game2C_ListGroupsResponse)await session.Call(C2Game_ListGroupsRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_ListGroupsResponse> C2Game_ListGroupsRequest(this Session session, string nameFilter, int limit, string cursor)
+		{
+			using var C2Game_ListGroupsRequest_request = Fantasy.C2Game_ListGroupsRequest.Create();
+			C2Game_ListGroupsRequest_request.NameFilter = nameFilter;
+			C2Game_ListGroupsRequest_request.Limit = limit;
+			C2Game_ListGroupsRequest_request.Cursor = cursor;
+			return (Game2C_ListGroupsResponse)await session.Call(C2Game_ListGroupsRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_ListUserGroupsResponse> C2Game_ListUserGroupsRequest(this Session session, C2Game_ListUserGroupsRequest C2Game_ListUserGroupsRequest_request)
+		{
+			return (Game2C_ListUserGroupsResponse)await session.Call(C2Game_ListUserGroupsRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_ListUserGroupsResponse> C2Game_ListUserGroupsRequest(this Session session)
+		{
+			using var C2Game_ListUserGroupsRequest_request = Fantasy.C2Game_ListUserGroupsRequest.Create();
+			return (Game2C_ListUserGroupsResponse)await session.Call(C2Game_ListUserGroupsRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_JoinGroupResponse> C2Game_JoinGroupRequest(this Session session, C2Game_JoinGroupRequest C2Game_JoinGroupRequest_request)
+		{
+			return (Game2C_JoinGroupResponse)await session.Call(C2Game_JoinGroupRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_JoinGroupResponse> C2Game_JoinGroupRequest(this Session session, ulong groupId)
+		{
+			using var C2Game_JoinGroupRequest_request = Fantasy.C2Game_JoinGroupRequest.Create();
+			C2Game_JoinGroupRequest_request.GroupId = groupId;
+			return (Game2C_JoinGroupResponse)await session.Call(C2Game_JoinGroupRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_LeaveGroupResponse> C2Game_LeaveGroupRequest(this Session session, C2Game_LeaveGroupRequest C2Game_LeaveGroupRequest_request)
+		{
+			return (Game2C_LeaveGroupResponse)await session.Call(C2Game_LeaveGroupRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_LeaveGroupResponse> C2Game_LeaveGroupRequest(this Session session, ulong groupId)
+		{
+			using var C2Game_LeaveGroupRequest_request = Fantasy.C2Game_LeaveGroupRequest.Create();
+			C2Game_LeaveGroupRequest_request.GroupId = groupId;
+			return (Game2C_LeaveGroupResponse)await session.Call(C2Game_LeaveGroupRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_ListGroupUsersResponse> C2Game_ListGroupUsersRequest(this Session session, C2Game_ListGroupUsersRequest C2Game_ListGroupUsersRequest_request)
+		{
+			return (Game2C_ListGroupUsersResponse)await session.Call(C2Game_ListGroupUsersRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_ListGroupUsersResponse> C2Game_ListGroupUsersRequest(this Session session, ulong groupId, int state, int limit, string cursor)
+		{
+			using var C2Game_ListGroupUsersRequest_request = Fantasy.C2Game_ListGroupUsersRequest.Create();
+			C2Game_ListGroupUsersRequest_request.GroupId = groupId;
+			C2Game_ListGroupUsersRequest_request.State = state;
+			C2Game_ListGroupUsersRequest_request.Limit = limit;
+			C2Game_ListGroupUsersRequest_request.Cursor = cursor;
+			return (Game2C_ListGroupUsersResponse)await session.Call(C2Game_ListGroupUsersRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_AddGroupUsersResponse> C2Game_AddGroupUsersRequest(this Session session, C2Game_AddGroupUsersRequest C2Game_AddGroupUsersRequest_request)
+		{
+			return (Game2C_AddGroupUsersResponse)await session.Call(C2Game_AddGroupUsersRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_AddGroupUsersResponse> C2Game_AddGroupUsersRequest(this Session session, ulong groupId, List<ulong> roleIds)
+		{
+			using var C2Game_AddGroupUsersRequest_request = Fantasy.C2Game_AddGroupUsersRequest.Create();
+			C2Game_AddGroupUsersRequest_request.GroupId = groupId;
+			C2Game_AddGroupUsersRequest_request.RoleIds = roleIds;
+			return (Game2C_AddGroupUsersResponse)await session.Call(C2Game_AddGroupUsersRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_PromoteGroupUsersResponse> C2Game_PromoteGroupUsersRequest(this Session session, C2Game_PromoteGroupUsersRequest C2Game_PromoteGroupUsersRequest_request)
+		{
+			return (Game2C_PromoteGroupUsersResponse)await session.Call(C2Game_PromoteGroupUsersRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_PromoteGroupUsersResponse> C2Game_PromoteGroupUsersRequest(this Session session, ulong groupId, List<ulong> roleIds)
+		{
+			using var C2Game_PromoteGroupUsersRequest_request = Fantasy.C2Game_PromoteGroupUsersRequest.Create();
+			C2Game_PromoteGroupUsersRequest_request.GroupId = groupId;
+			C2Game_PromoteGroupUsersRequest_request.RoleIds = roleIds;
+			return (Game2C_PromoteGroupUsersResponse)await session.Call(C2Game_PromoteGroupUsersRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_DemoteGroupUsersResponse> C2Game_DemoteGroupUsersRequest(this Session session, C2Game_DemoteGroupUsersRequest C2Game_DemoteGroupUsersRequest_request)
+		{
+			return (Game2C_DemoteGroupUsersResponse)await session.Call(C2Game_DemoteGroupUsersRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_DemoteGroupUsersResponse> C2Game_DemoteGroupUsersRequest(this Session session, ulong groupId, List<ulong> roleIds)
+		{
+			using var C2Game_DemoteGroupUsersRequest_request = Fantasy.C2Game_DemoteGroupUsersRequest.Create();
+			C2Game_DemoteGroupUsersRequest_request.GroupId = groupId;
+			C2Game_DemoteGroupUsersRequest_request.RoleIds = roleIds;
+			return (Game2C_DemoteGroupUsersResponse)await session.Call(C2Game_DemoteGroupUsersRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_KickGroupUsersResponse> C2Game_KickGroupUsersRequest(this Session session, C2Game_KickGroupUsersRequest C2Game_KickGroupUsersRequest_request)
+		{
+			return (Game2C_KickGroupUsersResponse)await session.Call(C2Game_KickGroupUsersRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_KickGroupUsersResponse> C2Game_KickGroupUsersRequest(this Session session, ulong groupId, List<ulong> roleIds)
+		{
+			using var C2Game_KickGroupUsersRequest_request = Fantasy.C2Game_KickGroupUsersRequest.Create();
+			C2Game_KickGroupUsersRequest_request.GroupId = groupId;
+			C2Game_KickGroupUsersRequest_request.RoleIds = roleIds;
+			return (Game2C_KickGroupUsersResponse)await session.Call(C2Game_KickGroupUsersRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_BanGroupUsersResponse> C2Game_BanGroupUsersRequest(this Session session, C2Game_BanGroupUsersRequest C2Game_BanGroupUsersRequest_request)
+		{
+			return (Game2C_BanGroupUsersResponse)await session.Call(C2Game_BanGroupUsersRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_BanGroupUsersResponse> C2Game_BanGroupUsersRequest(this Session session, ulong groupId, List<ulong> roleIds)
+		{
+			using var C2Game_BanGroupUsersRequest_request = Fantasy.C2Game_BanGroupUsersRequest.Create();
+			C2Game_BanGroupUsersRequest_request.GroupId = groupId;
+			C2Game_BanGroupUsersRequest_request.RoleIds = roleIds;
+			return (Game2C_BanGroupUsersResponse)await session.Call(C2Game_BanGroupUsersRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void G2C_GroupChangedNotify(this Session session, G2C_GroupChangedNotify G2C_GroupChangedNotify_message)
+		{
+			session.Send(G2C_GroupChangedNotify_message);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void G2C_GroupChangedNotify(this Session session, int op, ulong groupId, CSGroupInfo group, CSGroupUser user)
+		{
+			using var G2C_GroupChangedNotify_message = Fantasy.G2C_GroupChangedNotify.Create();
+			G2C_GroupChangedNotify_message.Op = op;
+			G2C_GroupChangedNotify_message.GroupId = groupId;
+			G2C_GroupChangedNotify_message.Group = group;
+			G2C_GroupChangedNotify_message.User = user;
+			session.Send(G2C_GroupChangedNotify_message);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static async FTask<A2C_RegisterResponse> C2A_RegisterRequest(this Session session, C2A_RegisterRequest C2A_RegisterRequest_request)
 		{
 			return (A2C_RegisterResponse)await session.Call(C2A_RegisterRequest_request);

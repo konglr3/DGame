@@ -59,6 +59,16 @@ public static class ChatTreeFactory
         };
     }
 
+    public static ChatInfoTree Group(Scene scene, long groupId)
+    {
+        return new ChatInfoTree
+        {
+            Scene = scene,
+            ChatChannelType = (int)ChatChannelType.Group,
+            ChatChannelId = groupId,
+        };
+    }
+
     public static ChatInfoTree Near(Scene scene)
     {
         return new ChatInfoTree

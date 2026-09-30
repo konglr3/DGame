@@ -27,6 +27,7 @@ public static class ChatSceneHelper
                 Broadcast(chatUnit.Scene, tree);
                 return 0;
             case ChatChannelType.Team:
+            case ChatChannelType.Group:
                 return Channel(chatUnit, tree);
             case ChatChannelType.Private:
                 return Private(chatUnit, tree);

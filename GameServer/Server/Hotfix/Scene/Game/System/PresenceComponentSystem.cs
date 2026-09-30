@@ -201,6 +201,11 @@ public static class PresenceComponentSystem
         PushToGate(self, roleId, message);
     }
 
+    public static void SendToRole(this PresenceComponent self, long roleId, G2C_GroupChangedNotify message)
+    {
+        PushToGate(self, roleId, message);
+    }
+
     private static void PushToGate(PresenceComponent self, long roleId, G2C_StatusPresenceNotify message)
     {
         var playerManage = self.Scene.GetComponent<GamePlayerManageComponent>();
@@ -246,6 +251,32 @@ public static class PresenceComponentSystem
             SessionRuntimeId = terminus.ForwardSessionAddress,
             Op = message.Op,
             Friend = message.Friend
+        });
+    }
+
+    private static void PushToGate(PresenceComponent self, long roleId, G2C_GroupChangedNotify message)
+    {
+        var playerManage = self.Scene.GetComponent<GamePlayerManageComponent>();
+        if (playerManage == null || !playerManage.TryGet(roleId, out var playerData) || playerData.IsDisposed)
+        {
+            return;
+        }
+
+        if (!playerData.TryGetLinkTerminus(out var terminus) ||
+            terminus == null ||
+            terminus.ForwardSceneAddress == 0 ||
+            terminus.ForwardSessionAddress == 0)
+        {
+            return;
+        }
+
+        self.Scene.Send(terminus.ForwardSceneAddress, new Game2G_GroupChangedNotify
+        {
+            SessionRuntimeId = terminus.ForwardSessionAddress,
+            Op = message.Op,
+            GroupId = message.GroupId,
+            Group = message.Group,
+            User = message.User
         });
     }
 }

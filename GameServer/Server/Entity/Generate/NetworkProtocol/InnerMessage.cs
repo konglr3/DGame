@@ -837,4 +837,111 @@ namespace Fantasy
         [ProtoMember(3)]
         public List<CSStatusPresence> Leaves { get; set; }
     }
+    /// <summary>
+    /// Game → Gate：推送群组变更
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class Game2G_GroupChangedNotify : AMessage, IAddressMessage
+    {
+        public static Game2G_GroupChangedNotify Create(bool autoReturn = true)
+        {
+            var game2G_GroupChangedNotify = MessageObjectPool<Game2G_GroupChangedNotify>.Rent();
+            game2G_GroupChangedNotify.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                game2G_GroupChangedNotify.SetIsPool(false);
+            }
+            
+            return game2G_GroupChangedNotify;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            SessionRuntimeId = default;
+            Op = default;
+            GroupId = default;
+            Group = default;
+            User = default;
+            MessageObjectPool<Game2G_GroupChangedNotify>.Return(this);
+        }
+        public uint OpCode() { return InnerOpcode.Game2G_GroupChangedNotify; } 
+        [ProtoMember(1)]
+        public long SessionRuntimeId { get; set; }
+        [ProtoMember(2)]
+        public int Op { get; set; }
+        [ProtoMember(3)]
+        public ulong GroupId { get; set; }
+        [ProtoMember(4)]
+        public CSGroupInfo Group { get; set; }
+        [ProtoMember(5)]
+        public CSGroupUser User { get; set; }
+    }
+    /// <summary>
+    /// Game → Chat：同步群组聊天频道成员
+    /// Op: 1=Join / 2=Leave / 3=Disband
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class Game2Chat_GroupChannelSync : AMessage, IAddressMessage
+    {
+        public static Game2Chat_GroupChannelSync Create(bool autoReturn = true)
+        {
+            var game2Chat_GroupChannelSync = MessageObjectPool<Game2Chat_GroupChannelSync>.Rent();
+            game2Chat_GroupChannelSync.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                game2Chat_GroupChannelSync.SetIsPool(false);
+            }
+            
+            return game2Chat_GroupChannelSync;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            GroupId = default;
+            RoleId = default;
+            Op = default;
+            MessageObjectPool<Game2Chat_GroupChannelSync>.Return(this);
+        }
+        public uint OpCode() { return InnerOpcode.Game2Chat_GroupChannelSync; } 
+        [ProtoMember(1)]
+        public long GroupId { get; set; }
+        [ProtoMember(2)]
+        public long RoleId { get; set; }
+        [ProtoMember(3)]
+        public int Op { get; set; }
+    }
 }

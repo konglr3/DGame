@@ -51,6 +51,15 @@ namespace GOS.Chat
         }
 
         /// <summary>
+        /// 发送群组频道聊天
+        /// </summary>
+        public static async FTask<Chat2C_SendMessageResponse> SendGroup(this ChatComponent self, long groupId, string content)
+        {
+            var tree = ChatTreeFactory.Group(self.Scene, groupId).AddendTextNode(content);
+            return await self.Send(tree);
+        }
+
+        /// <summary>
         /// 发送私聊
         /// </summary>
         public static async FTask<Chat2C_SendMessageResponse> SendPrivate(this ChatComponent self, long targetUnitId, string content)

@@ -15,11 +15,12 @@ public enum ChatChannelType
     Team                   = 1 << 6,    // 队伍频道
     Near                   = 1 << 7,    // 附近频道
     CurrentMap             = 1 << 8,    // 当前地图频道
+    Group                  = 1 << 9,    // 群组频道
 
     // 所有频道
-    All                    = World | Private | System | Broadcast | Notice | Team | Near,
+    All                    = World | Private | System | Broadcast | Notice | Team | Near | Group,
     // 其他聊天栏显示的频道
-    Display                = World | Private | System | Broadcast | Notice | Team | Near | CurrentMap
+    Display                = World | Private | System | Broadcast | Notice | Team | Near | CurrentMap | Group
 }
 
 /// <summary>

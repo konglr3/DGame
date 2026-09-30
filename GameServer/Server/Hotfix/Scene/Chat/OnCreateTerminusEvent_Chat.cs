@@ -40,6 +40,7 @@ public sealed class OnCreateTerminusEvent_Chat : AsyncEventSystem<OnCreateTermin
                 var chatUnit = await CreateOrReuseChatUnit(scene, args);
                 await terminus.LinkTerminusEntity(chatUnit, autoDispose: true);
                 JoinDemoChannel(scene, chatUnit);
+                await JoinGroupChannels(scene, chatUnit);
                 args.Dispose();
                 Log.Debug($"[OnCreateTerminusEvent_Chat][Link] SceneId:{scene.Id} RoleId:{chatUnit.Id}");
                 break;
@@ -57,12 +58,14 @@ public sealed class OnCreateTerminusEvent_Chat : AsyncEventSystem<OnCreateTermin
                     chatUnit = await CreateOrReuseChatUnit(scene, tempArgs);
                     await terminus.LinkTerminusEntity(chatUnit, autoDispose: true);
                     JoinDemoChannel(scene, chatUnit);
+                    await JoinGroupChannels(scene, chatUnit);
                     Log.Debug($"[OnCreateTerminusEvent_Chat][ReLink] 重建 ChatUnit SceneId:{scene.Id} RoleId:{chatUnit.Id}");
                 }
                 else
                 {
                     scene.GetComponent<ChatUnitManageComponent>().Add(chatUnit);
                     JoinDemoChannel(scene, chatUnit);
+                    await JoinGroupChannels(scene, chatUnit);
                     Log.Debug($"[OnCreateTerminusEvent_Chat][ReLink] 恢复在线 SceneId:{scene.Id} RoleId:{chatUnit.Id}");
                 }
 
@@ -99,5 +102,32 @@ public sealed class OnCreateTerminusEvent_Chat : AsyncEventSystem<OnCreateTermin
     {
         var channel = scene.GetComponent<ChatChannelCenterComponent>().Apply(1);
         channel.JoinChannel(chatUnit.Id);
+    }
+
+    /// <summary>
+    /// 登录 Chat 时按持久化群成员关系恢复群组频道。
+    /// </summary>
+    private static async FTask JoinGroupChannels(Scene scene, ChatUnit chatUnit)
+    {
+        try
+        {
+            var members = await scene.World.Database.QueryByPageOrderBy<GroupMember>(
+                d => d.RoleId == chatUnit.Id && d.State <= GroupMemberState.Member,
+                1,
+                GroupLimit.JoinMax,
+                d => d.UpdateTime,
+                false,
+                true);
+
+            var center = scene.GetComponent<ChatChannelCenterComponent>();
+            foreach (var member in members)
+            {
+                center.Apply(member.GroupId).JoinChannel(chatUnit.Id);
+            }
+        }
+        catch (System.Exception e)
+        {
+            Log.Warning($"JoinGroupChannels fail RoleId:{chatUnit.Id} {e.Message}");
+        }
     }
 }

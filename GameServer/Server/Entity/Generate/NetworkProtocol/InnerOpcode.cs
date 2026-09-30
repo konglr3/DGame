@@ -20,5 +20,7 @@ namespace Fantasy
         public const uint Other2Chat_ChatMessage = 939534099;
         public const uint Game2G_FriendChangedNotify = 939534100;
         public const uint Game2G_StatusPresenceNotify = 939534101;
+        public const uint Game2G_GroupChangedNotify = 939534102;
+        public const uint Game2Chat_GroupChannelSync = 939534103;
     }
 }

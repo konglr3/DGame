@@ -52,4 +52,16 @@ public static class ErrorCode
 
     public const uint PRESENCE_INVALID_PARAMETER = 5101; // 状态显示参数无效
     public const uint PRESENCE_INTERNAL_ERROR = 5102; // 状态显示内部错误
+
+    public const uint GROUP_INVALID_PARAMETER = 5201; // 群组参数无效
+    public const uint GROUP_NOT_FOUND = 5202; // 群组不存在
+    public const uint GROUP_NO_PERMISSION = 5203; // 无权限
+    public const uint GROUP_FULL = 5204; // 群组已满
+    public const uint GROUP_ALREADY_MEMBER = 5205; // 已是成员
+    public const uint GROUP_ALREADY_PENDING = 5206; // 已提交申请
+    public const uint GROUP_BANNED = 5207; // 已被封禁
+    public const uint GROUP_LIMIT = 5208; // 加入群数量或申请数已达上限
+    public const uint GROUP_SOLE_SUPERADMIN = 5209; // 唯一超管不可退出
+    public const uint GROUP_NOT_MEMBER = 5210; // 不是群成员
+    public const uint GROUP_INTERNAL_ERROR = 5211; // 群组系统内部错误
 }

@@ -40,6 +40,7 @@ public sealed class OnSceneCreate_Init : AsyncEventSystem<OnCreateScene>
                 scene.AddComponent<GamePlayerManageComponent>();
                 scene.AddComponent<FriendComponent>();
                 scene.AddComponent<PresenceComponent>();
+                scene.AddComponent<GroupComponent>();
                 break;
             case SceneType.Chat:
                 // 序列化组件（聊天节点附加 Data）

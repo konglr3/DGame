@@ -134,3 +134,22 @@ message Game2G_StatusPresenceNotify // IAddressMessage
     repeatedList CSStatusPresence Joins = 2;
     repeatedList CSStatusPresence Leaves = 3;
 }
+
+/// Game → Gate：推送群组变更
+message Game2G_GroupChangedNotify // IAddressMessage
+{
+    int64 SessionRuntimeId = 1;
+    int Op = 2;
+    ulong GroupId = 3;
+    CSGroupInfo Group = 4;
+    CSGroupUser User = 5;
+}
+
+/// Game → Chat：同步群组聊天频道成员
+/// Op: 1=Join / 2=Leave / 3=Disband
+message Game2Chat_GroupChannelSync // IAddressMessage
+{
+    int64 GroupId = 1;
+    int64 RoleId = 2;
+    int Op = 3;
+}

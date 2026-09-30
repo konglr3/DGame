@@ -29,4 +29,9 @@ public static class CoroutineLockType
     /// 好友关系操作协程锁类型
     /// </summary>
     public const long FriendOperateLock = 5;
+
+    /// <summary>
+    /// 群组操作协程锁类型
+    /// </summary>
+    public const long GroupOperateLock = 6;
 }

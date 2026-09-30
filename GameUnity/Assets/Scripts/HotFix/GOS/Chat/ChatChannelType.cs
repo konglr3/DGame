@@ -17,9 +17,10 @@ namespace GOS.Chat
         Team                   = 1 << 6,
         Near                   = 1 << 7,
         CurrentMap             = 1 << 8,
+        Group                  = 1 << 9,
 
-        All                    = World | Private | System | Broadcast | Notice | Team | Near,
-        Display                = World | Private | System | Broadcast | Notice | Team | Near | CurrentMap
+        All                    = World | Private | System | Broadcast | Notice | Team | Near | Group,
+        Display                = World | Private | System | Broadcast | Notice | Team | Near | CurrentMap | Group
     }
 
     /// <summary>

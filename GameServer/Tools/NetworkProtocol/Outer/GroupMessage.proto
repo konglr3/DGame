@@ -1,0 +1,234 @@
+syntax = "proto3";
+package Fantasy.Network.Message;
+
+// Game Scene 群组（对齐 Nakama Groups）
+// Member State: 0 Superadmin / 1 Admin / 2 Member / 3 JoinRequest
+
+/// 群组资料
+message CSGroupInfo
+{
+  ulong GroupId = 1;
+  string Name = 2;
+  string Description = 3;
+  string AvatarUrl = 4;
+  string LangTag = 5;
+  bool Open = 6;
+  int MaxCount = 7;
+  int MemberCount = 8;
+  ulong CreatorRoleId = 9;
+  int64 CreateTime = 10;
+  map<string, string> Metadata = 11;
+}
+
+/// 群组成员
+message CSGroupUser
+{
+  ulong RoleId = 1;
+  string RoleName = 2;
+  int HeadID = 3;
+  uint Level = 4;
+  int State = 5;
+}
+
+/// 我加入的群（含自身角色）
+message CSUserGroup
+{
+  CSGroupInfo Group = 1;
+  int State = 2;
+}
+
+/// 创建群组
+message C2Game_CreateGroupRequest // IRoamingRequest,Game2C_CreateGroupResponse,GameRoamingType
+{
+  string Name = 1;
+  string Description = 2;
+  string AvatarUrl = 3;
+  string LangTag = 4;
+  bool Open = 5;
+  int MaxCount = 6;
+}
+
+/// 创建群组返回
+message Game2C_CreateGroupResponse // IRoamingResponse
+{
+  CSGroupInfo Group = 1;
+}
+
+/// 更新群组资料 / 可见性
+message C2Game_UpdateGroupRequest // IRoamingRequest,Game2C_UpdateGroupResponse,GameRoamingType
+{
+  ulong GroupId = 1;
+  string Name = 2;
+  string Description = 3;
+  string AvatarUrl = 4;
+  string LangTag = 5;
+  bool HasOpen = 6;
+  bool Open = 7;
+  int MaxCount = 8;
+}
+
+/// 更新群组返回
+message Game2C_UpdateGroupResponse // IRoamingResponse
+{
+  CSGroupInfo Group = 1;
+}
+
+/// 全量替换群组元数据
+message C2Game_UpdateGroupMetadataRequest // IRoamingRequest,Game2C_UpdateGroupMetadataResponse,GameRoamingType
+{
+  ulong GroupId = 1;
+  map<string, string> Metadata = 2;
+}
+
+/// 更新元数据返回
+message Game2C_UpdateGroupMetadataResponse // IRoamingResponse
+{
+  CSGroupInfo Group = 1;
+}
+
+/// 删除群组
+message C2Game_DeleteGroupRequest // IRoamingRequest,Game2C_DeleteGroupResponse,GameRoamingType
+{
+  ulong GroupId = 1;
+}
+
+/// 删除群组返回
+message Game2C_DeleteGroupResponse // IRoamingResponse
+{
+}
+
+/// 搜索群组列表
+message C2Game_ListGroupsRequest // IRoamingRequest,Game2C_ListGroupsResponse,GameRoamingType
+{
+  string NameFilter = 1;
+  int Limit = 2;
+  string Cursor = 3;
+}
+
+/// 搜索群组返回
+message Game2C_ListGroupsResponse // IRoamingResponse
+{
+  repeatedList CSGroupInfo Groups = 1;
+  string Cursor = 2;
+}
+
+/// 列出我加入的群
+message C2Game_ListUserGroupsRequest // IRoamingRequest,Game2C_ListUserGroupsResponse,GameRoamingType
+{
+}
+
+/// 我的群组返回
+message Game2C_ListUserGroupsResponse // IRoamingResponse
+{
+  repeatedList CSUserGroup UserGroups = 1;
+}
+
+/// 加入群组
+message C2Game_JoinGroupRequest // IRoamingRequest,Game2C_JoinGroupResponse,GameRoamingType
+{
+  ulong GroupId = 1;
+}
+
+/// 加入群组返回
+message Game2C_JoinGroupResponse // IRoamingResponse
+{
+  CSGroupInfo Group = 1;
+  int State = 2;
+}
+
+/// 退出群组
+message C2Game_LeaveGroupRequest // IRoamingRequest,Game2C_LeaveGroupResponse,GameRoamingType
+{
+  ulong GroupId = 1;
+}
+
+/// 退出群组返回
+message Game2C_LeaveGroupResponse // IRoamingResponse
+{
+}
+
+/// 列出群成员（State<0 表示全部）
+message C2Game_ListGroupUsersRequest // IRoamingRequest,Game2C_ListGroupUsersResponse,GameRoamingType
+{
+  ulong GroupId = 1;
+  int State = 2;
+  int Limit = 3;
+  string Cursor = 4;
+}
+
+/// 群成员列表返回
+message Game2C_ListGroupUsersResponse // IRoamingResponse
+{
+  repeatedList CSGroupUser Users = 1;
+  string Cursor = 2;
+}
+
+/// 批准加入申请
+message C2Game_AddGroupUsersRequest // IRoamingRequest,Game2C_AddGroupUsersResponse,GameRoamingType
+{
+  ulong GroupId = 1;
+  repeatedList ulong RoleIds = 2;
+}
+
+/// 批准申请返回
+message Game2C_AddGroupUsersResponse // IRoamingResponse
+{
+}
+
+/// 晋升成员
+message C2Game_PromoteGroupUsersRequest // IRoamingRequest,Game2C_PromoteGroupUsersResponse,GameRoamingType
+{
+  ulong GroupId = 1;
+  repeatedList ulong RoleIds = 2;
+}
+
+/// 晋升返回
+message Game2C_PromoteGroupUsersResponse // IRoamingResponse
+{
+}
+
+/// 降级成员
+message C2Game_DemoteGroupUsersRequest // IRoamingRequest,Game2C_DemoteGroupUsersResponse,GameRoamingType
+{
+  ulong GroupId = 1;
+  repeatedList ulong RoleIds = 2;
+}
+
+/// 降级返回
+message Game2C_DemoteGroupUsersResponse // IRoamingResponse
+{
+}
+
+/// 踢出成员
+message C2Game_KickGroupUsersRequest // IRoamingRequest,Game2C_KickGroupUsersResponse,GameRoamingType
+{
+  ulong GroupId = 1;
+  repeatedList ulong RoleIds = 2;
+}
+
+/// 踢出返回
+message Game2C_KickGroupUsersResponse // IRoamingResponse
+{
+}
+
+/// 封禁成员
+message C2Game_BanGroupUsersRequest // IRoamingRequest,Game2C_BanGroupUsersResponse,GameRoamingType
+{
+  ulong GroupId = 1;
+  repeatedList ulong RoleIds = 2;
+}
+
+/// 封禁返回
+message Game2C_BanGroupUsersResponse // IRoamingResponse
+{
+}
+
+/// 群组变更推送
+/// Op: 1=UpsertGroup 2=RemoveGroup 3=UpsertMember 4=RemoveMember
+message G2C_GroupChangedNotify // IMessage
+{
+  int Op = 1;
+  ulong GroupId = 2;
+  CSGroupInfo Group = 3;
+  CSGroupUser User = 4;
+}
