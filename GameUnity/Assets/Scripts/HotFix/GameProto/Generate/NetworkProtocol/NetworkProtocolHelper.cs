@@ -197,6 +197,84 @@ namespace Fantasy
 			session.Send(Chat2C_Message_message);
 		}
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_AddFriendResponse> C2Game_AddFriendRequest(this Session session, C2Game_AddFriendRequest C2Game_AddFriendRequest_request)
+		{
+			return (Game2C_AddFriendResponse)await session.Call(C2Game_AddFriendRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_AddFriendResponse> C2Game_AddFriendRequest(this Session session, ulong targetRoleId, string targetRoleName)
+		{
+			using var C2Game_AddFriendRequest_request = Fantasy.C2Game_AddFriendRequest.Create();
+			C2Game_AddFriendRequest_request.TargetRoleId = targetRoleId;
+			C2Game_AddFriendRequest_request.TargetRoleName = targetRoleName;
+			return (Game2C_AddFriendResponse)await session.Call(C2Game_AddFriendRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_DeleteFriendResponse> C2Game_DeleteFriendRequest(this Session session, C2Game_DeleteFriendRequest C2Game_DeleteFriendRequest_request)
+		{
+			return (Game2C_DeleteFriendResponse)await session.Call(C2Game_DeleteFriendRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_DeleteFriendResponse> C2Game_DeleteFriendRequest(this Session session, ulong targetRoleId, string targetRoleName)
+		{
+			using var C2Game_DeleteFriendRequest_request = Fantasy.C2Game_DeleteFriendRequest.Create();
+			C2Game_DeleteFriendRequest_request.TargetRoleId = targetRoleId;
+			C2Game_DeleteFriendRequest_request.TargetRoleName = targetRoleName;
+			return (Game2C_DeleteFriendResponse)await session.Call(C2Game_DeleteFriendRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_BlockFriendResponse> C2Game_BlockFriendRequest(this Session session, C2Game_BlockFriendRequest C2Game_BlockFriendRequest_request)
+		{
+			return (Game2C_BlockFriendResponse)await session.Call(C2Game_BlockFriendRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_BlockFriendResponse> C2Game_BlockFriendRequest(this Session session, ulong targetRoleId, string targetRoleName)
+		{
+			using var C2Game_BlockFriendRequest_request = Fantasy.C2Game_BlockFriendRequest.Create();
+			C2Game_BlockFriendRequest_request.TargetRoleId = targetRoleId;
+			C2Game_BlockFriendRequest_request.TargetRoleName = targetRoleName;
+			return (Game2C_BlockFriendResponse)await session.Call(C2Game_BlockFriendRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_ListFriendsResponse> C2Game_ListFriendsRequest(this Session session, C2Game_ListFriendsRequest C2Game_ListFriendsRequest_request)
+		{
+			return (Game2C_ListFriendsResponse)await session.Call(C2Game_ListFriendsRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_ListFriendsResponse> C2Game_ListFriendsRequest(this Session session, int state, int limit, string cursor)
+		{
+			using var C2Game_ListFriendsRequest_request = Fantasy.C2Game_ListFriendsRequest.Create();
+			C2Game_ListFriendsRequest_request.State = state;
+			C2Game_ListFriendsRequest_request.Limit = limit;
+			C2Game_ListFriendsRequest_request.Cursor = cursor;
+			return (Game2C_ListFriendsResponse)await session.Call(C2Game_ListFriendsRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_ListRecommendFriendsResponse> C2Game_ListRecommendFriendsRequest(this Session session, C2Game_ListRecommendFriendsRequest C2Game_ListRecommendFriendsRequest_request)
+		{
+			return (Game2C_ListRecommendFriendsResponse)await session.Call(C2Game_ListRecommendFriendsRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_ListRecommendFriendsResponse> C2Game_ListRecommendFriendsRequest(this Session session, int limit)
+		{
+			using var C2Game_ListRecommendFriendsRequest_request = Fantasy.C2Game_ListRecommendFriendsRequest.Create();
+			C2Game_ListRecommendFriendsRequest_request.Limit = limit;
+			return (Game2C_ListRecommendFriendsResponse)await session.Call(C2Game_ListRecommendFriendsRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void G2C_FriendChangedNotify(this Session session, G2C_FriendChangedNotify G2C_FriendChangedNotify_message)
+		{
+			session.Send(G2C_FriendChangedNotify_message);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void G2C_FriendChangedNotify(this Session session, int op, CSFriendInfo friend)
+		{
+			using var G2C_FriendChangedNotify_message = Fantasy.G2C_FriendChangedNotify.Create();
+			G2C_FriendChangedNotify_message.Op = op;
+			G2C_FriendChangedNotify_message.Friend = friend;
+			session.Send(G2C_FriendChangedNotify_message);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static async FTask<G2C_QueryFuncOpenListResponse> C2G_QueryFuncOpenListRequest(this Session session, C2G_QueryFuncOpenListRequest C2G_QueryFuncOpenListRequest_request)
 		{
 			return (G2C_QueryFuncOpenListResponse)await session.Call(C2G_QueryFuncOpenListRequest_request);
@@ -293,6 +371,55 @@ namespace Fantasy
 		{
 			using var C2Game_GetPlayerDataRequest_request = Fantasy.C2Game_GetPlayerDataRequest.Create();
 			return (Game2C_GetPlayerDataResponse)await session.Call(C2Game_GetPlayerDataRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_FollowUsersResponse> C2Game_FollowUsersRequest(this Session session, C2Game_FollowUsersRequest C2Game_FollowUsersRequest_request)
+		{
+			return (Game2C_FollowUsersResponse)await session.Call(C2Game_FollowUsersRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_FollowUsersResponse> C2Game_FollowUsersRequest(this Session session, List<ulong> roleIds)
+		{
+			using var C2Game_FollowUsersRequest_request = Fantasy.C2Game_FollowUsersRequest.Create();
+			C2Game_FollowUsersRequest_request.RoleIds = roleIds;
+			return (Game2C_FollowUsersResponse)await session.Call(C2Game_FollowUsersRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_UnfollowUsersResponse> C2Game_UnfollowUsersRequest(this Session session, C2Game_UnfollowUsersRequest C2Game_UnfollowUsersRequest_request)
+		{
+			return (Game2C_UnfollowUsersResponse)await session.Call(C2Game_UnfollowUsersRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_UnfollowUsersResponse> C2Game_UnfollowUsersRequest(this Session session, List<ulong> roleIds)
+		{
+			using var C2Game_UnfollowUsersRequest_request = Fantasy.C2Game_UnfollowUsersRequest.Create();
+			C2Game_UnfollowUsersRequest_request.RoleIds = roleIds;
+			return (Game2C_UnfollowUsersResponse)await session.Call(C2Game_UnfollowUsersRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_UpdateStatusResponse> C2Game_UpdateStatusRequest(this Session session, C2Game_UpdateStatusRequest C2Game_UpdateStatusRequest_request)
+		{
+			return (Game2C_UpdateStatusResponse)await session.Call(C2Game_UpdateStatusRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static async FTask<Game2C_UpdateStatusResponse> C2Game_UpdateStatusRequest(this Session session, string statusText)
+		{
+			using var C2Game_UpdateStatusRequest_request = Fantasy.C2Game_UpdateStatusRequest.Create();
+			C2Game_UpdateStatusRequest_request.StatusText = statusText;
+			return (Game2C_UpdateStatusResponse)await session.Call(C2Game_UpdateStatusRequest_request);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void G2C_StatusPresenceNotify(this Session session, G2C_StatusPresenceNotify G2C_StatusPresenceNotify_message)
+		{
+			session.Send(G2C_StatusPresenceNotify_message);
+		}
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void G2C_StatusPresenceNotify(this Session session, List<CSStatusPresence> joins, List<CSStatusPresence> leaves)
+		{
+			using var G2C_StatusPresenceNotify_message = Fantasy.G2C_StatusPresenceNotify.Create();
+			G2C_StatusPresenceNotify_message.Joins = joins;
+			G2C_StatusPresenceNotify_message.Leaves = leaves;
+			session.Send(G2C_StatusPresenceNotify_message);
 		}
 
    }

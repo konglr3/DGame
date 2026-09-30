@@ -24,4 +24,9 @@ public static class CoroutineLockType
     /// 房间创建协程锁类型
     /// </summary>
     public const long RoomCreateLock = 4;
+
+    /// <summary>
+    /// 好友关系操作协程锁类型
+    /// </summary>
+    public const long FriendOperateLock = 5;
 }

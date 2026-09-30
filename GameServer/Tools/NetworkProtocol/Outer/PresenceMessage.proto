@@ -1,0 +1,53 @@
+syntax = "proto3";
+package Fantasy.Network.Message;
+
+// Game Scene 状态与显示（对齐 Nakama Status Presence）
+
+/// 单个状态显示信息
+message CSStatusPresence
+{
+  ulong RoleId = 1;
+  string RoleName = 2;
+  string StatusText = 3;
+}
+
+/// 关注用户
+message C2Game_FollowUsersRequest // IRoamingRequest,Game2C_FollowUsersResponse,GameRoamingType
+{
+  repeatedList ulong RoleIds = 1;
+}
+
+/// 关注用户返回（当前在线快照）
+message Game2C_FollowUsersResponse // IRoamingResponse
+{
+  repeatedList CSStatusPresence Presences = 1;
+}
+
+/// 取消关注用户
+message C2Game_UnfollowUsersRequest // IRoamingRequest,Game2C_UnfollowUsersResponse,GameRoamingType
+{
+  repeatedList ulong RoleIds = 1;
+}
+
+/// 取消关注用户返回
+message Game2C_UnfollowUsersResponse // IRoamingResponse
+{
+}
+
+/// 更新自身状态文案
+message C2Game_UpdateStatusRequest // IRoamingRequest,Game2C_UpdateStatusResponse,GameRoamingType
+{
+  string StatusText = 1;
+}
+
+/// 更新自身状态返回
+message Game2C_UpdateStatusResponse // IRoamingResponse
+{
+}
+
+/// 状态显示变更推送
+message G2C_StatusPresenceNotify // IMessage
+{
+  repeatedList CSStatusPresence Joins = 1;
+  repeatedList CSStatusPresence Leaves = 2;
+}

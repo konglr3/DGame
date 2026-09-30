@@ -19,6 +19,7 @@ public sealed class PlayerManagerComponentDestroySystem : DestroySystem<PlayerMa
     protected override void Destroy(PlayerManagerComponent self)
     {
         self.PlayerDataDict.Clear();
+        self.PlayerDataByRoleId.Clear();
     }
 }
 
@@ -58,7 +59,24 @@ public static class PlayerManagerComponentSystem
     /// <param name="self"></param>
     /// <param name="playerData"></param>
     public static void Add(this PlayerManagerComponent self, PlayerData playerData)
-        => self.PlayerDataDict.TryAdd(GetCacheKey(playerData.AccountID, playerData.ServerID), playerData);
+    {
+        if (self.PlayerDataDict.TryAdd(GetCacheKey(playerData.AccountID, playerData.ServerID), playerData))
+        {
+            self.PlayerDataByRoleId[playerData.Id] = playerData;
+        }
+    }
+
+    /// <summary>
+    /// 按 RoleId 获取在线玩家。
+    /// </summary>
+    public static PlayerData? GetByRoleId(this PlayerManagerComponent self, long roleId)
+        => self.PlayerDataByRoleId.GetValueOrDefault(roleId);
+
+    /// <summary>
+    /// 按 RoleId 获取在线玩家。
+    /// </summary>
+    public static bool TryGetByRoleId(this PlayerManagerComponent self, long roleId, out PlayerData playerData)
+        => self.PlayerDataByRoleId.TryGetValue(roleId, out playerData);
 
     /// <summary>
     /// 获取玩家账号数据
@@ -145,6 +163,8 @@ public static class PlayerManagerComponentSystem
             return false;
         }
 
+        self.PlayerDataByRoleId.Remove(playerData.Id);
+
         if (isDispose)
         {
             playerData.Dispose();
@@ -165,6 +185,8 @@ public static class PlayerManagerComponentSystem
         {
             return false;
         }
+
+        self.PlayerDataByRoleId.Remove(playerData.Id);
 
         if (isDispose)
         {

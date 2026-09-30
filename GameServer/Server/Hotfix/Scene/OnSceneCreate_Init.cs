@@ -36,6 +36,10 @@ public sealed class OnSceneCreate_Init : AsyncEventSystem<OnCreateScene>
             case SceneType.Game:
                 // Game 场景挂房间管理组件。
                 scene.AddComponent<RoomManagerComponent>();
+                // 在线玩家 / 好友 / 状态显示
+                scene.AddComponent<GamePlayerManageComponent>();
+                scene.AddComponent<FriendComponent>();
+                scene.AddComponent<PresenceComponent>();
                 break;
             case SceneType.Chat:
                 // 序列化组件（聊天节点附加 Data）

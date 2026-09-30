@@ -1,11 +1,18 @@
 using DGame;
 using Fantasy.Async;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace GameLogic
 {
 	public partial class MainPage
 	{
 		#region Override
+
+		protected override void OnCreate()
+		{
+			CreateFriendEntryButton();
+		}
 
 		protected override void RegisterEvent()
 		{
@@ -156,6 +163,40 @@ namespace GameLogic
 		{
 			var roomInfo = RoomDataMgr.Instance.CurrentRoomInfo;
 			return roomInfo != null && roomInfo.CaptainRoleId > 0 && roomInfo.CaptainRoleId == DataCenterSys.Instance.CurRoleID;
+		}
+
+		private void CreateFriendEntryButton()
+		{
+			if (transform.Find("m_btnFriend") != null)
+			{
+				return;
+			}
+
+			var go = new GameObject("m_btnFriend", typeof(RectTransform), typeof(Image), typeof(Button));
+			go.transform.SetParent(transform, false);
+			var rect = go.GetComponent<RectTransform>();
+			rect.anchorMin = new Vector2(0.02f, 0.88f);
+			rect.anchorMax = new Vector2(0.18f, 0.96f);
+			rect.offsetMin = Vector2.zero;
+			rect.offsetMax = Vector2.zero;
+			go.GetComponent<Image>().color = new Color(0.2f, 0.5f, 0.85f, 0.95f);
+			go.GetComponent<Button>().onClick.AddListener(() => GameModule.UIModule.ShowWindowAsync<FriendUI>());
+
+			var textGo = new GameObject("Text", typeof(RectTransform), typeof(Text));
+			textGo.transform.SetParent(go.transform, false);
+			var textRect = textGo.GetComponent<RectTransform>();
+			textRect.anchorMin = Vector2.zero;
+			textRect.anchorMax = Vector2.one;
+			textRect.offsetMin = Vector2.zero;
+			textRect.offsetMax = Vector2.zero;
+			var text = textGo.GetComponent<Text>();
+			text.text = "好友";
+			text.alignment = TextAnchor.MiddleCenter;
+			text.color = Color.white;
+			text.fontSize = 24;
+			text.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+
+			CreateRedDot(RedDotPathDefine.Social.Friends.Request, go.transform);
 		}
 
 		#endregion

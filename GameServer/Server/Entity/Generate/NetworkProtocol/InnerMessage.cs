@@ -737,4 +737,104 @@ namespace Fantasy
         [ProtoMember(1)]
         public ChatInfoTree ChatInfoTree { get; set; }
     }
+    /// <summary>
+    /// Game → Gate：推送好友关系变更
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class Game2G_FriendChangedNotify : AMessage, IAddressMessage
+    {
+        public static Game2G_FriendChangedNotify Create(bool autoReturn = true)
+        {
+            var game2G_FriendChangedNotify = MessageObjectPool<Game2G_FriendChangedNotify>.Rent();
+            game2G_FriendChangedNotify.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                game2G_FriendChangedNotify.SetIsPool(false);
+            }
+            
+            return game2G_FriendChangedNotify;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            SessionRuntimeId = default;
+            Op = default;
+            Friend = default;
+            MessageObjectPool<Game2G_FriendChangedNotify>.Return(this);
+        }
+        public uint OpCode() { return InnerOpcode.Game2G_FriendChangedNotify; } 
+        [ProtoMember(1)]
+        public long SessionRuntimeId { get; set; }
+        [ProtoMember(2)]
+        public int Op { get; set; }
+        [ProtoMember(3)]
+        public CSFriendInfo Friend { get; set; }
+    }
+    /// <summary>
+    /// Game → Gate：推送状态显示变更
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class Game2G_StatusPresenceNotify : AMessage, IAddressMessage
+    {
+        public static Game2G_StatusPresenceNotify Create(bool autoReturn = true)
+        {
+            var game2G_StatusPresenceNotify = MessageObjectPool<Game2G_StatusPresenceNotify>.Rent();
+            game2G_StatusPresenceNotify.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                game2G_StatusPresenceNotify.SetIsPool(false);
+            }
+            
+            return game2G_StatusPresenceNotify;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            SessionRuntimeId = default;
+            Joins = null;
+            Leaves = null;
+            MessageObjectPool<Game2G_StatusPresenceNotify>.Return(this);
+        }
+        public uint OpCode() { return InnerOpcode.Game2G_StatusPresenceNotify; } 
+        [ProtoMember(1)]
+        public long SessionRuntimeId { get; set; }
+        [ProtoMember(2)]
+        public List<CSStatusPresence> Joins { get; set; }
+        [ProtoMember(3)]
+        public List<CSStatusPresence> Leaves { get; set; }
+    }
 }

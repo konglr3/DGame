@@ -2088,6 +2088,610 @@ namespace Fantasy
         public string MP { get; set; }
     }
     /// <summary>
+    /// 好友条目
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class CSFriendInfo : AMessage, IDisposable
+    {
+        public static CSFriendInfo Create(bool autoReturn = true)
+        {
+            var cSFriendInfo = MessageObjectPool<CSFriendInfo>.Rent();
+            cSFriendInfo.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                cSFriendInfo.SetIsPool(false);
+            }
+            
+            return cSFriendInfo;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            RoleId = default;
+            RoleName = default;
+            HeadID = default;
+            Level = default;
+            State = default;
+            MessageObjectPool<CSFriendInfo>.Return(this);
+        }
+        [ProtoMember(1)]
+        public ulong RoleId { get; set; }
+        [ProtoMember(2)]
+        public string RoleName { get; set; }
+        [ProtoMember(3)]
+        public int HeadID { get; set; }
+        [ProtoMember(4)]
+        public uint Level { get; set; }
+        [ProtoMember(5)]
+        public int State { get; set; }
+    }
+    /// <summary>
+    /// 添加好友（发申请或接受 Incoming）
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class C2Game_AddFriendRequest : AMessage, IRoamingRequest
+    {
+        public static C2Game_AddFriendRequest Create(bool autoReturn = true)
+        {
+            var c2Game_AddFriendRequest = MessageObjectPool<C2Game_AddFriendRequest>.Rent();
+            c2Game_AddFriendRequest.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                c2Game_AddFriendRequest.SetIsPool(false);
+            }
+            
+            return c2Game_AddFriendRequest;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            TargetRoleId = default;
+            TargetRoleName = default;
+            MessageObjectPool<C2Game_AddFriendRequest>.Return(this);
+        }
+        public uint OpCode() { return OuterOpcode.C2Game_AddFriendRequest; } 
+        [ProtoIgnore]
+        public Game2C_AddFriendResponse ResponseType { get; set; }
+        [ProtoIgnore]
+        public int RouteType => Fantasy.RoamingType.GameRoamingType;
+        [ProtoMember(1)]
+        public ulong TargetRoleId { get; set; }
+        [ProtoMember(2)]
+        public string TargetRoleName { get; set; }
+    }
+    /// <summary>
+    /// 添加好友返回
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class Game2C_AddFriendResponse : AMessage, IRoamingResponse
+    {
+        public static Game2C_AddFriendResponse Create(bool autoReturn = true)
+        {
+            var game2C_AddFriendResponse = MessageObjectPool<Game2C_AddFriendResponse>.Rent();
+            game2C_AddFriendResponse.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                game2C_AddFriendResponse.SetIsPool(false);
+            }
+            
+            return game2C_AddFriendResponse;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            ErrorCode = 0;
+            if (Friend != null)
+            {
+                Friend.Dispose();
+                Friend = null;
+            }
+            MessageObjectPool<Game2C_AddFriendResponse>.Return(this);
+        }
+        public uint OpCode() { return OuterOpcode.Game2C_AddFriendResponse; } 
+        [ProtoMember(1)]
+        public uint ErrorCode { get; set; }
+        [ProtoMember(2)]
+        public CSFriendInfo Friend { get; set; }
+    }
+    /// <summary>
+    /// 删除好友 / 拒绝申请
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class C2Game_DeleteFriendRequest : AMessage, IRoamingRequest
+    {
+        public static C2Game_DeleteFriendRequest Create(bool autoReturn = true)
+        {
+            var c2Game_DeleteFriendRequest = MessageObjectPool<C2Game_DeleteFriendRequest>.Rent();
+            c2Game_DeleteFriendRequest.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                c2Game_DeleteFriendRequest.SetIsPool(false);
+            }
+            
+            return c2Game_DeleteFriendRequest;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            TargetRoleId = default;
+            TargetRoleName = default;
+            MessageObjectPool<C2Game_DeleteFriendRequest>.Return(this);
+        }
+        public uint OpCode() { return OuterOpcode.C2Game_DeleteFriendRequest; } 
+        [ProtoIgnore]
+        public Game2C_DeleteFriendResponse ResponseType { get; set; }
+        [ProtoIgnore]
+        public int RouteType => Fantasy.RoamingType.GameRoamingType;
+        [ProtoMember(1)]
+        public ulong TargetRoleId { get; set; }
+        [ProtoMember(2)]
+        public string TargetRoleName { get; set; }
+    }
+    /// <summary>
+    /// 删除好友返回
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class Game2C_DeleteFriendResponse : AMessage, IRoamingResponse
+    {
+        public static Game2C_DeleteFriendResponse Create(bool autoReturn = true)
+        {
+            var game2C_DeleteFriendResponse = MessageObjectPool<Game2C_DeleteFriendResponse>.Rent();
+            game2C_DeleteFriendResponse.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                game2C_DeleteFriendResponse.SetIsPool(false);
+            }
+            
+            return game2C_DeleteFriendResponse;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            ErrorCode = 0;
+            MessageObjectPool<Game2C_DeleteFriendResponse>.Return(this);
+        }
+        public uint OpCode() { return OuterOpcode.Game2C_DeleteFriendResponse; } 
+        [ProtoMember(1)]
+        public uint ErrorCode { get; set; }
+    }
+    /// <summary>
+    /// 屏蔽用户
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class C2Game_BlockFriendRequest : AMessage, IRoamingRequest
+    {
+        public static C2Game_BlockFriendRequest Create(bool autoReturn = true)
+        {
+            var c2Game_BlockFriendRequest = MessageObjectPool<C2Game_BlockFriendRequest>.Rent();
+            c2Game_BlockFriendRequest.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                c2Game_BlockFriendRequest.SetIsPool(false);
+            }
+            
+            return c2Game_BlockFriendRequest;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            TargetRoleId = default;
+            TargetRoleName = default;
+            MessageObjectPool<C2Game_BlockFriendRequest>.Return(this);
+        }
+        public uint OpCode() { return OuterOpcode.C2Game_BlockFriendRequest; } 
+        [ProtoIgnore]
+        public Game2C_BlockFriendResponse ResponseType { get; set; }
+        [ProtoIgnore]
+        public int RouteType => Fantasy.RoamingType.GameRoamingType;
+        [ProtoMember(1)]
+        public ulong TargetRoleId { get; set; }
+        [ProtoMember(2)]
+        public string TargetRoleName { get; set; }
+    }
+    /// <summary>
+    /// 屏蔽用户返回
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class Game2C_BlockFriendResponse : AMessage, IRoamingResponse
+    {
+        public static Game2C_BlockFriendResponse Create(bool autoReturn = true)
+        {
+            var game2C_BlockFriendResponse = MessageObjectPool<Game2C_BlockFriendResponse>.Rent();
+            game2C_BlockFriendResponse.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                game2C_BlockFriendResponse.SetIsPool(false);
+            }
+            
+            return game2C_BlockFriendResponse;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            ErrorCode = 0;
+            if (Friend != null)
+            {
+                Friend.Dispose();
+                Friend = null;
+            }
+            MessageObjectPool<Game2C_BlockFriendResponse>.Return(this);
+        }
+        public uint OpCode() { return OuterOpcode.Game2C_BlockFriendResponse; } 
+        [ProtoMember(1)]
+        public uint ErrorCode { get; set; }
+        [ProtoMember(2)]
+        public CSFriendInfo Friend { get; set; }
+    }
+    /// <summary>
+    /// 按状态列出好友
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class C2Game_ListFriendsRequest : AMessage, IRoamingRequest
+    {
+        public static C2Game_ListFriendsRequest Create(bool autoReturn = true)
+        {
+            var c2Game_ListFriendsRequest = MessageObjectPool<C2Game_ListFriendsRequest>.Rent();
+            c2Game_ListFriendsRequest.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                c2Game_ListFriendsRequest.SetIsPool(false);
+            }
+            
+            return c2Game_ListFriendsRequest;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            State = default;
+            Limit = default;
+            Cursor = default;
+            MessageObjectPool<C2Game_ListFriendsRequest>.Return(this);
+        }
+        public uint OpCode() { return OuterOpcode.C2Game_ListFriendsRequest; } 
+        [ProtoIgnore]
+        public Game2C_ListFriendsResponse ResponseType { get; set; }
+        [ProtoIgnore]
+        public int RouteType => Fantasy.RoamingType.GameRoamingType;
+        [ProtoMember(1)]
+        public int State { get; set; }
+        [ProtoMember(2)]
+        public int Limit { get; set; }
+        [ProtoMember(3)]
+        public string Cursor { get; set; }
+    }
+    /// <summary>
+    /// 列出好友返回
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class Game2C_ListFriendsResponse : AMessage, IRoamingResponse
+    {
+        public static Game2C_ListFriendsResponse Create(bool autoReturn = true)
+        {
+            var game2C_ListFriendsResponse = MessageObjectPool<Game2C_ListFriendsResponse>.Rent();
+            game2C_ListFriendsResponse.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                game2C_ListFriendsResponse.SetIsPool(false);
+            }
+            
+            return game2C_ListFriendsResponse;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            ErrorCode = 0;
+            Friends = null;
+            Cursor = default;
+            MessageObjectPool<Game2C_ListFriendsResponse>.Return(this);
+        }
+        public uint OpCode() { return OuterOpcode.Game2C_ListFriendsResponse; } 
+        [ProtoMember(1)]
+        public uint ErrorCode { get; set; }
+        [ProtoMember(2)]
+        public List<CSFriendInfo> Friends { get; set; }
+        [ProtoMember(3)]
+        public string Cursor { get; set; }
+    }
+    /// <summary>
+    /// 推荐好友
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class C2Game_ListRecommendFriendsRequest : AMessage, IRoamingRequest
+    {
+        public static C2Game_ListRecommendFriendsRequest Create(bool autoReturn = true)
+        {
+            var c2Game_ListRecommendFriendsRequest = MessageObjectPool<C2Game_ListRecommendFriendsRequest>.Rent();
+            c2Game_ListRecommendFriendsRequest.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                c2Game_ListRecommendFriendsRequest.SetIsPool(false);
+            }
+            
+            return c2Game_ListRecommendFriendsRequest;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            Limit = default;
+            MessageObjectPool<C2Game_ListRecommendFriendsRequest>.Return(this);
+        }
+        public uint OpCode() { return OuterOpcode.C2Game_ListRecommendFriendsRequest; } 
+        [ProtoIgnore]
+        public Game2C_ListRecommendFriendsResponse ResponseType { get; set; }
+        [ProtoIgnore]
+        public int RouteType => Fantasy.RoamingType.GameRoamingType;
+        [ProtoMember(1)]
+        public int Limit { get; set; }
+    }
+    /// <summary>
+    /// 推荐好友返回
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class Game2C_ListRecommendFriendsResponse : AMessage, IRoamingResponse
+    {
+        public static Game2C_ListRecommendFriendsResponse Create(bool autoReturn = true)
+        {
+            var game2C_ListRecommendFriendsResponse = MessageObjectPool<Game2C_ListRecommendFriendsResponse>.Rent();
+            game2C_ListRecommendFriendsResponse.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                game2C_ListRecommendFriendsResponse.SetIsPool(false);
+            }
+            
+            return game2C_ListRecommendFriendsResponse;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            ErrorCode = 0;
+            Friends = null;
+            MessageObjectPool<Game2C_ListRecommendFriendsResponse>.Return(this);
+        }
+        public uint OpCode() { return OuterOpcode.Game2C_ListRecommendFriendsResponse; } 
+        [ProtoMember(1)]
+        public uint ErrorCode { get; set; }
+        [ProtoMember(2)]
+        public List<CSFriendInfo> Friends { get; set; }
+    }
+    /// <summary>
+    /// 好友关系变更推送 Op: 1=Upsert 2=Remove
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class G2C_FriendChangedNotify : AMessage, IMessage
+    {
+        public static G2C_FriendChangedNotify Create(bool autoReturn = true)
+        {
+            var g2C_FriendChangedNotify = MessageObjectPool<G2C_FriendChangedNotify>.Rent();
+            g2C_FriendChangedNotify.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                g2C_FriendChangedNotify.SetIsPool(false);
+            }
+            
+            return g2C_FriendChangedNotify;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            Op = default;
+            if (Friend != null)
+            {
+                Friend.Dispose();
+                Friend = null;
+            }
+            MessageObjectPool<G2C_FriendChangedNotify>.Return(this);
+        }
+        public uint OpCode() { return OuterOpcode.G2C_FriendChangedNotify; } 
+        [ProtoMember(1)]
+        public int Op { get; set; }
+        [ProtoMember(2)]
+        public CSFriendInfo Friend { get; set; }
+    }
+    /// <summary>
     /// 查询功能开放列表
     /// </summary>
     [Serializable]
@@ -3008,5 +3612,380 @@ namespace Fantasy
         public uint ErrorCode { get; set; }
         [ProtoMember(2)]
         public CSPlayerData PlayerData { get; set; }
+    }
+    /// <summary>
+    /// 单个状态显示信息
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class CSStatusPresence : AMessage, IDisposable
+    {
+        public static CSStatusPresence Create(bool autoReturn = true)
+        {
+            var cSStatusPresence = MessageObjectPool<CSStatusPresence>.Rent();
+            cSStatusPresence.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                cSStatusPresence.SetIsPool(false);
+            }
+            
+            return cSStatusPresence;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            RoleId = default;
+            RoleName = default;
+            StatusText = default;
+            MessageObjectPool<CSStatusPresence>.Return(this);
+        }
+        [ProtoMember(1)]
+        public ulong RoleId { get; set; }
+        [ProtoMember(2)]
+        public string RoleName { get; set; }
+        [ProtoMember(3)]
+        public string StatusText { get; set; }
+    }
+    /// <summary>
+    /// 关注用户
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class C2Game_FollowUsersRequest : AMessage, IRoamingRequest
+    {
+        public static C2Game_FollowUsersRequest Create(bool autoReturn = true)
+        {
+            var c2Game_FollowUsersRequest = MessageObjectPool<C2Game_FollowUsersRequest>.Rent();
+            c2Game_FollowUsersRequest.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                c2Game_FollowUsersRequest.SetIsPool(false);
+            }
+            
+            return c2Game_FollowUsersRequest;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            RoleIds = null;
+            MessageObjectPool<C2Game_FollowUsersRequest>.Return(this);
+        }
+        public uint OpCode() { return OuterOpcode.C2Game_FollowUsersRequest; } 
+        [ProtoIgnore]
+        public Game2C_FollowUsersResponse ResponseType { get; set; }
+        [ProtoIgnore]
+        public int RouteType => Fantasy.RoamingType.GameRoamingType;
+        [ProtoMember(1)]
+        public List<ulong> RoleIds { get; set; }
+    }
+    /// <summary>
+    /// 关注用户返回（当前在线快照）
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class Game2C_FollowUsersResponse : AMessage, IRoamingResponse
+    {
+        public static Game2C_FollowUsersResponse Create(bool autoReturn = true)
+        {
+            var game2C_FollowUsersResponse = MessageObjectPool<Game2C_FollowUsersResponse>.Rent();
+            game2C_FollowUsersResponse.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                game2C_FollowUsersResponse.SetIsPool(false);
+            }
+            
+            return game2C_FollowUsersResponse;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            ErrorCode = 0;
+            Presences = null;
+            MessageObjectPool<Game2C_FollowUsersResponse>.Return(this);
+        }
+        public uint OpCode() { return OuterOpcode.Game2C_FollowUsersResponse; } 
+        [ProtoMember(1)]
+        public uint ErrorCode { get; set; }
+        [ProtoMember(2)]
+        public List<CSStatusPresence> Presences { get; set; }
+    }
+    /// <summary>
+    /// 取消关注用户
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class C2Game_UnfollowUsersRequest : AMessage, IRoamingRequest
+    {
+        public static C2Game_UnfollowUsersRequest Create(bool autoReturn = true)
+        {
+            var c2Game_UnfollowUsersRequest = MessageObjectPool<C2Game_UnfollowUsersRequest>.Rent();
+            c2Game_UnfollowUsersRequest.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                c2Game_UnfollowUsersRequest.SetIsPool(false);
+            }
+            
+            return c2Game_UnfollowUsersRequest;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            RoleIds = null;
+            MessageObjectPool<C2Game_UnfollowUsersRequest>.Return(this);
+        }
+        public uint OpCode() { return OuterOpcode.C2Game_UnfollowUsersRequest; } 
+        [ProtoIgnore]
+        public Game2C_UnfollowUsersResponse ResponseType { get; set; }
+        [ProtoIgnore]
+        public int RouteType => Fantasy.RoamingType.GameRoamingType;
+        [ProtoMember(1)]
+        public List<ulong> RoleIds { get; set; }
+    }
+    /// <summary>
+    /// 取消关注用户返回
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class Game2C_UnfollowUsersResponse : AMessage, IRoamingResponse
+    {
+        public static Game2C_UnfollowUsersResponse Create(bool autoReturn = true)
+        {
+            var game2C_UnfollowUsersResponse = MessageObjectPool<Game2C_UnfollowUsersResponse>.Rent();
+            game2C_UnfollowUsersResponse.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                game2C_UnfollowUsersResponse.SetIsPool(false);
+            }
+            
+            return game2C_UnfollowUsersResponse;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            ErrorCode = 0;
+            MessageObjectPool<Game2C_UnfollowUsersResponse>.Return(this);
+        }
+        public uint OpCode() { return OuterOpcode.Game2C_UnfollowUsersResponse; } 
+        [ProtoMember(1)]
+        public uint ErrorCode { get; set; }
+    }
+    /// <summary>
+    /// 更新自身状态文案
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class C2Game_UpdateStatusRequest : AMessage, IRoamingRequest
+    {
+        public static C2Game_UpdateStatusRequest Create(bool autoReturn = true)
+        {
+            var c2Game_UpdateStatusRequest = MessageObjectPool<C2Game_UpdateStatusRequest>.Rent();
+            c2Game_UpdateStatusRequest.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                c2Game_UpdateStatusRequest.SetIsPool(false);
+            }
+            
+            return c2Game_UpdateStatusRequest;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            StatusText = default;
+            MessageObjectPool<C2Game_UpdateStatusRequest>.Return(this);
+        }
+        public uint OpCode() { return OuterOpcode.C2Game_UpdateStatusRequest; } 
+        [ProtoIgnore]
+        public Game2C_UpdateStatusResponse ResponseType { get; set; }
+        [ProtoIgnore]
+        public int RouteType => Fantasy.RoamingType.GameRoamingType;
+        [ProtoMember(1)]
+        public string StatusText { get; set; }
+    }
+    /// <summary>
+    /// 更新自身状态返回
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class Game2C_UpdateStatusResponse : AMessage, IRoamingResponse
+    {
+        public static Game2C_UpdateStatusResponse Create(bool autoReturn = true)
+        {
+            var game2C_UpdateStatusResponse = MessageObjectPool<Game2C_UpdateStatusResponse>.Rent();
+            game2C_UpdateStatusResponse.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                game2C_UpdateStatusResponse.SetIsPool(false);
+            }
+            
+            return game2C_UpdateStatusResponse;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            ErrorCode = 0;
+            MessageObjectPool<Game2C_UpdateStatusResponse>.Return(this);
+        }
+        public uint OpCode() { return OuterOpcode.Game2C_UpdateStatusResponse; } 
+        [ProtoMember(1)]
+        public uint ErrorCode { get; set; }
+    }
+    /// <summary>
+    /// 状态显示变更推送
+    /// </summary>
+    [Serializable]
+    [ProtoContract]
+    public partial class G2C_StatusPresenceNotify : AMessage, IMessage
+    {
+        public static G2C_StatusPresenceNotify Create(bool autoReturn = true)
+        {
+            var g2C_StatusPresenceNotify = MessageObjectPool<G2C_StatusPresenceNotify>.Rent();
+            g2C_StatusPresenceNotify.AutoReturn = autoReturn;
+            
+            if (!autoReturn)
+            {
+                g2C_StatusPresenceNotify.SetIsPool(false);
+            }
+            
+            return g2C_StatusPresenceNotify;
+        }
+        
+        public void Return()
+        {
+            if (!AutoReturn)
+            {
+                SetIsPool(true);
+                AutoReturn = true;
+            }
+            else if (!IsPool())
+            {
+                return;
+            }
+            Dispose();
+        }
+
+        public void Dispose()
+        {
+            if (!IsPool()) return; 
+            Joins = null;
+            Leaves = null;
+            MessageObjectPool<G2C_StatusPresenceNotify>.Return(this);
+        }
+        public uint OpCode() { return OuterOpcode.G2C_StatusPresenceNotify; } 
+        [ProtoMember(1)]
+        public List<CSStatusPresence> Joins { get; set; }
+        [ProtoMember(2)]
+        public List<CSStatusPresence> Leaves { get; set; }
     }
 }

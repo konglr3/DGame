@@ -39,4 +39,17 @@ public static class ErrorCode
     public const uint ROOM_ALREADY_JOINED = 4003; // 玩家已在房间中
     public const uint ROOM_PLAYER_COUNT_INVALID = 4004; // 房间玩家数量配置无效
     public const uint ROOM_CREATE_FAILED = 4005; // 房间创建失败
+
+    public const uint FRIEND_INVALID_PARAMETER = 5001; // 好友参数无效
+    public const uint FRIEND_TARGET_NOT_FOUND = 5002; // 目标角色不存在
+    public const uint FRIEND_CANNOT_SELF = 5003; // 不能添加自己为好友
+    public const uint FRIEND_ALREADY_FRIEND = 5004; // 已是好友
+    public const uint FRIEND_ALREADY_PENDING = 5005; // 已发送或已收到申请
+    public const uint FRIEND_BLOCKED = 5006; // 已被屏蔽或已屏蔽对方
+    public const uint FRIEND_LIMIT = 5007; // 好友或申请数量已达上限
+    public const uint FRIEND_NOT_FOUND = 5008; // 好友关系不存在
+    public const uint FRIEND_INTERNAL_ERROR = 5009; // 好友系统内部错误
+
+    public const uint PRESENCE_INVALID_PARAMETER = 5101; // 状态显示参数无效
+    public const uint PRESENCE_INTERNAL_ERROR = 5102; // 状态显示内部错误
 }

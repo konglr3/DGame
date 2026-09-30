@@ -35,6 +35,8 @@ public sealed class OnDisposeTerminusEvent_Game : AsyncEventSystem<OnDisposeTerm
             case DisposeTerminusType.UnLink:
             {
                 // 真正断线：持久化 Game 侧玩家数据。autoDispose=true 时框架会随后销毁实体。
+                scene.GetComponent<PresenceComponent>()?.OnPlayerOffline(playerData);
+                scene.GetComponent<GamePlayerManageComponent>()?.Remove(playerData.Id);
                 await scene.World.Database.Save(playerData);
                 Log.Debug($"[OnDisposeTerminusEvent_Game][UnLink] RoleId:{playerData.Id} 已存档");
                 return;
@@ -42,6 +44,8 @@ public sealed class OnDisposeTerminusEvent_Game : AsyncEventSystem<OnDisposeTerm
             case DisposeTerminusType.Transfer:
             {
                 // 传送离开当前 Scene：只做本地清理，不执行下线存档。
+                scene.GetComponent<PresenceComponent>()?.OnPlayerOffline(playerData);
+                scene.GetComponent<GamePlayerManageComponent>()?.Remove(playerData.Id);
                 Log.Debug($"[OnDisposeTerminusEvent_Game][Transfer] RoleId:{playerData.Id}");
                 return;
             }

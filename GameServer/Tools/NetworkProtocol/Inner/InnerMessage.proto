@@ -118,3 +118,19 @@ message Other2Chat_ChatMessage // IAddressMessage
 {
     ChatInfoTree ChatInfoTree = 1;
 }
+
+/// Game → Gate：推送好友关系变更
+message Game2G_FriendChangedNotify // IAddressMessage
+{
+    int64 SessionRuntimeId = 1;
+    int Op = 2;
+    CSFriendInfo Friend = 3;
+}
+
+/// Game → Gate：推送状态显示变更
+message Game2G_StatusPresenceNotify // IAddressMessage
+{
+    int64 SessionRuntimeId = 1;
+    repeatedList CSStatusPresence Joins = 2;
+    repeatedList CSStatusPresence Leaves = 3;
+}

@@ -39,6 +39,8 @@ public sealed class OnCreateTerminusEvent_Game : AsyncEventSystem<OnCreateTermin
 
                 var playerData = await CreateOrLoadPlayerData(scene, args.RoleId, args);
                 await terminus.LinkTerminusEntity(playerData, autoDispose: true);
+                scene.GetComponent<GamePlayerManageComponent>()?.Add(playerData);
+                scene.GetComponent<PresenceComponent>()?.OnPlayerOnline(playerData);
                 args.Dispose();
                 Log.Debug($"[OnCreateTerminusEvent_Game][Link] SceneId:{scene.Id} RoleId:{playerData.Id}");
                 break;
@@ -59,6 +61,8 @@ public sealed class OnCreateTerminusEvent_Game : AsyncEventSystem<OnCreateTermin
                     Log.Debug($"[OnCreateTerminusEvent_Game][ReLink] 恢复在线 SceneId:{scene.Id} RoleId:{playerData.Id}");
                 }
 
+                scene.GetComponent<GamePlayerManageComponent>()?.Add(playerData);
+                scene.GetComponent<PresenceComponent>()?.OnPlayerOnline(playerData);
                 self.Args?.Dispose();
                 break;
             }

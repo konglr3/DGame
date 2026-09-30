@@ -1,0 +1,87 @@
+syntax = "proto3";
+package Fantasy.Network.Message;
+
+// Game Scene 好友关系图（对齐 Nakama Friends）
+// State: 0 Mutual / 1 Outgoing / 2 Incoming / 3 Blocked
+
+/// 好友条目
+message CSFriendInfo
+{
+  ulong RoleId = 1;
+  string RoleName = 2;
+  int HeadID = 3;
+  uint Level = 4;
+  int State = 5;
+}
+
+/// 添加好友（发申请或接受 Incoming）
+message C2Game_AddFriendRequest // IRoamingRequest,Game2C_AddFriendResponse,GameRoamingType
+{
+  ulong TargetRoleId = 1;
+  string TargetRoleName = 2;
+}
+
+/// 添加好友返回
+message Game2C_AddFriendResponse // IRoamingResponse
+{
+  CSFriendInfo Friend = 1;
+}
+
+/// 删除好友 / 拒绝申请
+message C2Game_DeleteFriendRequest // IRoamingRequest,Game2C_DeleteFriendResponse,GameRoamingType
+{
+  ulong TargetRoleId = 1;
+  string TargetRoleName = 2;
+}
+
+/// 删除好友返回
+message Game2C_DeleteFriendResponse // IRoamingResponse
+{
+}
+
+/// 屏蔽用户
+message C2Game_BlockFriendRequest // IRoamingRequest,Game2C_BlockFriendResponse,GameRoamingType
+{
+  ulong TargetRoleId = 1;
+  string TargetRoleName = 2;
+}
+
+/// 屏蔽用户返回
+message Game2C_BlockFriendResponse // IRoamingResponse
+{
+  CSFriendInfo Friend = 1;
+}
+
+/// 按状态列出好友
+message C2Game_ListFriendsRequest // IRoamingRequest,Game2C_ListFriendsResponse,GameRoamingType
+{
+  int State = 1;
+  int Limit = 2;
+  string Cursor = 3;
+}
+
+/// 列出好友返回
+message Game2C_ListFriendsResponse // IRoamingResponse
+{
+  repeatedList CSFriendInfo Friends = 1;
+  string Cursor = 2;
+}
+
+/// 推荐好友
+message C2Game_ListRecommendFriendsRequest // IRoamingRequest,Game2C_ListRecommendFriendsResponse,GameRoamingType
+{
+  int Limit = 1;
+}
+
+/// 推荐好友返回
+message Game2C_ListRecommendFriendsResponse // IRoamingResponse
+{
+  repeatedList CSFriendInfo Friends = 1;
+}
+
+/// 好友关系变更推送 Op: 1=Upsert 2=Remove
+message G2C_FriendChangedNotify // IMessage
+{
+  int Op = 1;
+  CSFriendInfo Friend = 2;
+}
